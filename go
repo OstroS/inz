@@ -1,0 +1,1 @@
+maruku --pdf praca.md  
