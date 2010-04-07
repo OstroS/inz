@@ -8,14 +8,16 @@
 
 ### Dotychczasowe działanie ###
 
-**TODO: Opis systemu. Jakiś wstęp**.
+`Wstęp`
 
 Opracowany system składa się z z pięciu nadajników (układ cyfrowy CPLD, generator UWB oraz antena) połączonych w szeregowo. Pierwszy z nich jest nadajnikiem nadrzędnym, który:
 
 * decyduje o rozpoczęciu procesu generacji i wysyłaniu impulsów w łączu radiowym,
 * uruchamia kolejny nadajnik.
 
-Każdy z nadajników, po otrzymaniu sekwencji sterującej, wysyła impulsy w łączu radiowym, które sterują pracą odbiornika. Odpowiednie sekwencje uruchamiają i zatrzymują pomiar czasu, a także niosą treść informacyjną umożliwiającą zidentyfikowacie konretnego nadajnika. Odbiornik, zgodnie ze sposobem działania systemów typu TDOA, mierzy różnicę czasów pomiędzy otrzymaniem sygnałów z poszczególnych nadajników. Po wysłaniu sekwencji z ostatniego nadajnika pomiar się kończy i odbiornik przechodzi do obliczania pozycji korzystając z zaprogramowanych algorytmów.
+Każdy z nadajników, po otrzymaniu sekwencji sterującej, wysyła impulsy w łączu radiowym, które sterują pracą odbiornika. Odpowiednie sekwencje uruchamiają i zatrzymują pomiar czasu, a także niosą treść informacyjną umożliwiającą zidentyfikowanie konretnego nadajnika. Odbiornik, zgodnie ze sposobem działania systemów typu TDOA, mierzy różnicę czasów pomiędzy otrzymaniem sygnałów z poszczególnych nadajników. Po wysłaniu sekwencji z ostatniego nadajnika pomiar się kończy i odbiornik przechodzi do obliczania pozycji korzystając z zaprogramowanych algorytmów.
+
+`Dokładniejszy opis`
 
 ### Problem ###
 
@@ -38,8 +40,41 @@ W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odp
 
 ## Założenia programu ##
 
-**TODO later**
+`TODO later`
+
 ## Struktura generowanych sygnałów ##
+
+### Przekaz informacyjny ###
+System lokalizacyjny, do realizacji swoich funkcji, wykorzystuje sekwencje sygnałów przesyłanych w łączu radiowym. Nadajniki przesyłają zestandaryzowane sekwencje bitów, których każde pole składowe reprezentuje wykonanie odpowiednich procedur w odbiorniku. Po detekcji przesyłanej sekwencji odbiornik realizuje funkcję określoną przez ciąg bitów. Strukturę logiczną przesyłanych danych prezentuje rysunek `:SchPak1`.
+
+`:SchPak1 schemat pakietu`
+
+### Funkcje bitów ###
+W schemacie pakietu informacyjnego możemy wyróżnić kilka pól, które uruchamiają odpowiednie funkcje odbiornika. Są to:
+* PRMB
+* STPS
+* BSTP
+* IDN
+* STRS
+* BSTR
+
+`(rozwinięcia skrótów po angielsku)`
+Każdy z nich odpowiada za inicjalizację odpowiedniego procesu w odbiorniku, które po zakończeniu umożliwiają określenie różnicy czasów propagacji sygnałów i finalnie obliczenie pozycji. 
+
+`Opisać rolę każdego fragmentu pakietu`
+
+1. **PRMB** - preambuła. Składa się z ok. 20 impulsów nadawanych z częstotliwością 50 MHz. Nie niesie treści informacyjnej, jednakże jest bardzo istotna z energetycznego punktu widzenia. Umożliwia bowiem układom odbiornika określenie poziomu sygnału, z jakimś będą transmitowane kolejne bity. Wejściowy układ *ARW* (ARW - Automatyczna Regulacja Wzmocnienia) dostosowuje parametry (`jakie? czy tylko wzmocnienie, czy może coś jeszcze?`) wzmacniacza wejściowego do poziomu mocy odebranej preambuły. Po ustaleniu tych parametrów odbiornik jest gotowy do odebrania i detekcji kolejnych bitów, które już niosą konkretną treść informacyjną.
+1. **STPS** - odblokowanie zatrzymania pomiaru czasu.
+1. **BSTP** - zatrzymanie pomiaru czasu.
+1. **IDN** - identyfikator nadajnika.
+1. **STRS** - odblokowanie uruchomienia pomiaru czasu.
+1. **BSTR** - uruchomienie pomiaru czasu.
+
+### Parametry czasowe ###
+
+`odstęp międzybitowy, częstotliwość zegara, przepływność`
+
+System transmisyjny oraz charakterystyka kanału radiowego narzucają określone wymagania co do parametrów parametrów czasowych przesyłanych sekwencji.
 
 ## Układ FPGA ##
 
