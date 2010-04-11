@@ -1,3 +1,7 @@
+* Table of contents
+{:toc}
+
+___
 # Wstęp #
 
 # Wprowadzenie do dziedziny #
@@ -40,7 +44,8 @@ W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odp
 
 ## Założenia programu ##
 
-`TODO later`
+    Todo later
+    * zaznaczyć wyraźnie co się dzieje w kablach, a co w łączu radiowym
 
 ## Struktura generowanych sygnałów ##
 
@@ -74,8 +79,6 @@ Krótkiego wyjaśnienia wymaga kolejność transmitowanych pakietów - najpierw 
 
 ### Parametry czasowe ###
 
-`odstęp międzybitowy, częstotliwość zegara, przepływność`
-
 System transmisyjny oraz charakterystyka kanału radiowego narzucają określone wymagania co do parametrów parametrów czasowych przesyłanych sekwencji.
 ![Odpowiedź impulsowa kanału radiowego - przykład](./img/impulseResponse.gif "img:kanalRadiowy")
 
@@ -90,7 +93,22 @@ Powyższym rozważaniom nie podlega jednak sygnał preambuły, który nadawany j
 
 ### Modulacja ###
 
-`On-Off Keying`
+#### W łączu radiowym ####
+
+W łączu radiowym wykorzystano modulację *OOK* (OOK - On-Off Keying), której ideę prezentują rysunki `img:OOK1` oraz `img:OOK2`
+
+![Sygnał oryginalny](./img/OOK_1.gif "img:OOK1")
+
+![Sygnał zmodulowany](./img/OOK_2.gif "img:OOK2")
+
+Logicznej jedynce odpowiada wysłanie nośnej, natomiast logiczne zero reprezentowane jest przez brak sygnału.
+
+#### W linii transmisyjnej ####
+
+    modyfikacja OOK (złamanie na pół, zboczu odpowiada generacja)
+    LVDS (tutaj, czy w opisie interfejsu?)
+
+
 
 ## Układ FPGA ##
 
