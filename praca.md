@@ -4,7 +4,27 @@
 ___
 # Wstęp #
 
+## Geneza ##
+
+## Wprowadzenie do pracy ##
+
 # Wprowadzenie do dziedziny #
+
+## Sygnały UWB ##
+
+## Systemy lokalizacyjne ##
+
+## Programowalne układy cyfrowe ##
+
+### Geneza, możliwości, sposób implementacji ###
+
+### VHDL ###
+
+### Układy i środowisko firmy Xilinx ###
+
+#### Spartan3 ####
+
+#### ISE Web Pack ####
 
 # Opis rozwiązania #
 
@@ -98,18 +118,18 @@ Powyższym rozważaniom nie podlega jednak sygnał preambuły, który nadawany j
 
 W łączu radiowym wykorzystano modulację *OOK* (OOK - On-Off Keying), której ideę prezentują rysunki `img:OOK1` oraz `img:OOK2`
 
-![Sygnał oryginalny](./img/OOK_1.gif "img:OOK1")
+![Sygnał oryginalny - źródło: National Instruments (www)](./img/OOK_1.gif "img:OOK1")
 
-![Sygnał zmodulowany](./img/OOK_2.gif "img:OOK2")
+![Sygnał zmodulowany - źródło: National Instruments (www)](./img/OOK_2.gif "img:OOK2")
 
-Logicznej jedynce odpowiada wysłanie nośnej, natomiast logiczne zero reprezentowane jest przez brak sygnału.
+Według teorii logicznej jedynce odpowiada wysłanie nośnej, natomiast logiczne zero reprezentowane jest przez brak sygnału. Przesyłanie sygnałów 
 
 #### W linii transmisyjnej ####
 
     modyfikacja OOK (złamanie na pół, zboczu odpowiada generacja)
     LVDS (tutaj, czy w opisie interfejsu?)
 
-
+![Standard LVDS - źródło: National Instruments (www)](./img/OOK_1.gif "img:LVDS")
 
 ## Układ FPGA ##
 
