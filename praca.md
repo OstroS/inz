@@ -122,20 +122,30 @@ W łączu radiowym wykorzystano modulację *OOK* (OOK - On-Off Keying), której 
 
 ![Sygnał zmodulowany - źródło: National Instruments (www)](./img/OOK_2.gif "img:OOK2")
 
-Według teorii logicznej jedynce odpowiada wysłanie nośnej, natomiast logiczne zero reprezentowane jest przez brak sygnału. Przesyłanie sygnałów 
+Według teorii logicznej jedynce odpowiada wysłanie nośnej (lub, tak jak w omawianym przypadku, impulsu UWB). Brak sygnału to logiczne zero.
 
 #### W linii transmisyjnej ####
 
-    modyfikacja OOK (złamanie na pół, zboczu odpowiada generacja)
-    LVDS (tutaj, czy w opisie interfejsu?)
+`informacja o wyzwalaniu na zbocze generatora`
 
-![Standard LVDS - źródło: National Instruments (www)](./img/OOK_1.gif "img:LVDS")
+Do transmisji danych w kablach doprowadzających sygnały do generatorów stosowany jest standard LVDS `(rys. img:LVDS)`. Jest to różnicowy sposób transmisji danych, gwarantujący:
+
+* wysoką energooszczędność,
+* wysoką przepływność,
+* ochronę przed zakłóceniami elektromagentycznymi.
+
+![Standard LVDS - źródło: National Instruments (www)](./img/lvds.png "img:LVDS")
+
+`źródło!!!` Różnicowy standard transmisji polega na wykorzystaniu dwóch skręconych żył jako linii sygnałowych (o dwóch różnych polaryzacjach) zamiast po jednej sygnałowej i masy. Nadajnik wpuszcza prąd o małym natężeniu (zazwyczaj *i = 3.5 \[mA\]*), który w odbiorniku przepływa przez rezystor dopasowujący wejście do linii transmisyjnej (zazwyczaj *R = 100 - 150 \[ohm\]*). Pierwszym stopniem odbiornika jest wzmacniacz o wejściu różnicowym o dużym wzmocnieniu składowej różnicowej, co zapewnia poprawny odbiór niewielkich sygnałów. Ponadto takie układy posiadają duże tłumienie składowej wspólnej (sumacyjnej), co chroni przed zakłóceniami elektromagnetycznymi. Jeśli takowe występują to wywołują zakłócenia w obu liniach sygnałowych jednocześnie.
 
 ## Układ FPGA ##
 
-## Interfejs ##
-
-
-# Badania programu #
+### Interfejs zewnętrzny i opcje konfiguracyjne
+### "Top module" 
+### "Single TRX Generator"
+#### Automat sterujący
+#### Tablica prawdy
+## Interfejs 
+# Badania programu 
 
 
