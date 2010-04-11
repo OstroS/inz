@@ -52,7 +52,8 @@ W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odp
 ### Przekaz informacyjny ###
 System lokalizacyjny, do realizacji swoich funkcji, wykorzystuje sekwencje sygnałów przesyłanych w łączu radiowym. Nadajniki przesyłają zestandaryzowane sekwencje bitów, których każde pole składowe reprezentuje wykonanie odpowiednich procedur w odbiorniku. Po detekcji przesyłanej sekwencji odbiornik realizuje funkcję określoną przez ciąg bitów. Strukturę logiczną przesyłanych danych prezentuje rysunek `img:SchPak1`.
 
-`img:SchPak1 schemat pakietu`
+![Struktura pakietu](./img/pakiet.png "img:SchPak1")
+
 
 ### Funkcje bitów ###
 W schemacie pakietu informacyjnego możemy wyróżnić kilka pól, które uruchamiają odpowiednie funkcje odbiornika. Są to:
