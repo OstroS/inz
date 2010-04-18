@@ -103,6 +103,10 @@ Do konwersji wykorzystano układy MAX9157 firmy Maxim, które:
 * odbierają sygnały różnicowe o poziomach od 100mV aż do Vcc,
 * posiadają obwody zabezpieczające wejścia (fail-save input).
 
+Możliwości te sprawiają, że układu MAX9157 są bardzo dobrymi elementami do budowy interfejsów do przesyłania danych długimi kablami.
+
+Ze względu na dużą liczbę peryferiów umieszczonych na płytce z FPGA omawiany konwerter nie może być przez nią zasilony. Zdecydowano, że zasilanie konwertera zostanie zrealizowane `od strony nadajników`. Do wolnej pary (do transmisji danych wykorzystano tylko 3 z 4 par) podłączone zostanie napięcie zasilania oraz masa. Potencjały te są podłączone z obu rozdzielaczy jednocześnie i są połączone poprzez diody oraz filtry złożone z kondensatora i perełki ferrytowej, którego celem jest odfiltrowanie wszelkich zakłóceń oraz separacja potencjałów analogowych i cyfrowych (aVcc, aGnd, Vcc, cGnd).
+
 
 ## Struktura generowanych sygnałów ##
 
