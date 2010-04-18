@@ -21,13 +21,14 @@ ___
 ## System opracowany w PMR przez mgr Kosińskiego (tytuł roboczy)
 
 ### Architektura
-
+`bibl:praca p.Kosińskiego`
 Opracowany system składa się z z pięciu nadajników (układ cyfrowy CPLD, generator UWB oraz antena) połączonych szeregowo. Pierwszy z nich jest nadajnikiem nadrzędnym, który:
 
 * decyduje o rozpoczęciu procesu generacji i wysyłaniu impulsów w łączu radiowym,
-* uruchamia kolejny nadajnik.
+* uruchamia kolejny nadajnik,
+* jest źródłem sygnału zegarowego 
 
-Każdy z nadajników, po otrzymaniu sekwencji sterującej, wysyła impulsy w łączu radiowym, które sterują pracą odbiornika. Odpowiednie sekwencje uruchamiają i zatrzymują pomiar czasu, a także niosą treść informacyjną umożliwiającą zidentyfikowanie konretnego nadajnika. Odbiornik, zgodnie ze sposobem działania systemów typu TDOA, mierzy różnicę czasów pomiędzy otrzymaniem sygnałów z poszczególnych nadajników. Po wysłaniu sekwencji z ostatniego nadajnika pomiar się kończy i odbiornik przechodzi do obliczania pozycji korzystając z zaprogramowanych algorytmów.
+Każdy z kolejnych nadajników otrzymuje sygnał zegara oraz sygnał wyzwalający. Zegar jest regenerowany i wysyłany dalej, po czym jest używany jako lokalny sygnał zegarowy, dzięki czemu wszystkie nadajniki są ze sobą zsynchronizowane. Po otrzymaniu sekwencji sterującej, każdy nadajnik wysyła impulsy w łączu radiowym, które sterują pracą odbiornika. Odpowiednie sekwencje uruchamiają i zatrzymują pomiar czasu, a także niosą treść informacyjną umożliwiającą zidentyfikowanie konretnego nadajnika. Odbiornik, zgodnie ze sposobem działania systemów typu TDOA, mierzy różnicę czasów pomiędzy otrzymaniem sygnałów z poszczególnych nadajników. Po wysłaniu sekwencji z ostatniego nadajnika pomiar się kończy i odbiornik przechodzi do obliczania pozycji korzystając z zaprogramowanych algorytmów.
 
 `Dokładniejszy opis`
 
@@ -54,31 +55,59 @@ Każdy z nadajników, po otrzymaniu sekwencji sterującej, wysyła impulsy w ł�
 
 ## Usprawnienia dotychczasowego systemu??
 
-System w swojej dotychczasowej wersji działał bardzo dobrze, lecz nie był pozbawiony wad. Głównym problemem, który pojawiał się w trakcie eksploatacji, był brak możliwości szybkiej zmiany parametrów systemu. Każdy z nadajników systemu posiadał zintegrowany układ CPLD, w którego pamięci zapisane zostały prametry konfiguracyjne. Rozwiązanie to jest bardzo wygodne z punktu widzenia konstruktora - tworzymy kilka takich samych układów, które różnią się tylko bitami zapisanymi w pamięci. Jednakże drobna zmiana parametrów wymaga programowania każdego z układów oddzielnie. Jeśli gniazdo JTAG zostało dodatkowo umieszczone w trudno dostępnym miejscu - nie jest to proces łatwy. Ponadto dla każdej z konfiguracji CPLD należy przeprowadzić syntezę układu, co powodowało duże nakłady czasowe. Taki proces uniemożliwiał wręcz przeprowadzanie wydajnych eksperymentów ze względu na:
+Najważniejszym celem pracy inżynierskiej jest usprawnienie i rozszerzenie funkcjonalności omówionego wcześniej systemu, który mimo iż działał bardzo dobrze, nie był pozbawiony wad. Głównym problemem, który pojawiał się w trakcie eksploatacji, był brak możliwości szybkiej zmiany parametrów systemu. Każdy z nadajników systemu posiadał zintegrowany układ CPLD, w którego pamięci zapisane zostały prametry konfiguracyjne. Rozwiązanie to jest bardzo wygodne z punktu widzenia konstruktora - tworzymy kilka takich samych układów, które różnią się tylko bitami zapisanymi w pamięci. Jednakże drobna zmiana parametrów wymaga programowania każdego z układów oddzielnie. Jeśli gniazdo JTAG zostało dodatkowo umieszczone w trudno dostępnym miejscu - nie jest to proces łatwy. Ponadto dla każdej z konfiguracji CPLD należy przeprowadzić syntezę układu, co powodowało duże nakłady czasowe. Taki proces uniemożliwiał wręcz przeprowadzanie wydajnych eksperymentów ze względu na:
 
 * czas dokonywanych zmian,
 * problemy z programowaniem każdegu układu z osobna.
 
+`Dodaktowym problemem była niedoskonała sekwencja bitów przesyłana w łączu radiowym. Bitów sterujących było zbyt mało, a preambuła każdego z pakietów nie spełniała do końca swojej roli. Przetwornik A/C umieszczony w pętli ARW wymaga sekwencji dłuższej oraz taktowanej wyższym zegarem.`
+
 W związku z tymi problemami zdecydowano się wprowadzić udoskonalenia, które zlikwidują wyżej wymienione błędy przy jednoczesnym zachowaniu wszystkich funkcji układu
 
-Jednym z możliwych uproszczeń systemu jest wprowadzenie centralnego układu sterującego  który zapewni:
+Jednym z możliwych rozwiązań jest wprowadzenie centralnego układu sterującego  który zapewni:
 
 * sterowanie sekwencyjnym uruchamianiem nadajników UWB,
 * możliwość ustawienia parametrów konfiguracyjnych układu w jednym miejscu,
-* łatwą rozbudowę i skalowalność.
+* łatwą rozbudowę i skalowalność,
+
 
 W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odpowiednią konfiguracją oraz układami wejścia-wyjścia, które zostaną przedstawione w kolejnych rozdziałach. 
 
 ## Architektura systemu
+Modyfikacja systemu wymagała opracowania nowej architektury, która wyeliminuje problemy powstałe w poprzedniej realizacji. Zdecydowano odejść od połączenia pierścieniowego nadajników na rzecz połączenia w gwiazdę wraz z centralnym układem sterującym.
+
+Takie połącznie posiada zdecydowanie więcej zalet, kosztem niewielkiej komplikacji układu. Do każdego z nadajników można wysyłać niezależnie i sekwencyjnie (bądź równolegle) sygnały, których parametry ustawia się w sterowniku. Każdy z modułów radiowych otrzymuje sygnał zegarowy bezpośrednio z sterowniku, dzięki czemu system jest niezależny od jitteru wprowadzanego przez każde z urządzeń (jitter nie sumuje się, tak jak w poprzedniej wersji).
+
+`img:archSystemu`
+
+Poglądową architekturę systemu zaprezentowano na rysunku `img:archSystemu`. Układ FPGA pełni główną funkcję sterującą. Operator systemu `może ustawiać parametry` oraz wyzwolić działanie systemu. Sterownik generuje odpowiednie sygnały `(zgodnie z ustawieniami)` wysyłając je na wyjścia, po czy następuje konwersja standardu przesyłania danych do potrzeb linii transmisyjnych oraz odbiorników. Z konwertera sygnały przesyłane są kablami w standardzie RJ45 (4 pary symetryczne) do rozdzielaczy, gdzie są przekazywane do odpowiednich nadajników.
 
 ## Moduł FPGA
 
 ## Moduł konwertera CMOS - LVDS
+Układ FPGA Spartan3 firmy Xilinx posiada wyjścia w prostym i popoularnym standardzie CMOS, w którym:
+
+* stan wysoki => 3,3V `marginesy`
+* stan niski => 0V
+
+Taki sposób kodowania stanów logicznych jest bardzo dobry dla układów pracujących blisko siebie, `połączonych krótkimi połączeniami`. Jednakże przy przesyłaniu sygnałów długimi kablami nie zdaje on egzaminu, gdyż jest bardzo wrażliwy na zakłócenia elektromagnetyczne. `co jeszcze?`
+
+W związku z tym zdecydowano, iż do transmisji sygnałów sterujących zostanie wykorzystany różnicowy standard przesyłania danych LVDS (`patrz podrozdział LVDS`). Konwerter sygnałów został zrealizowany jako moduł na oddzielnej płytce drukowanej ze złączem umożliwiającym łatwe dołączenie do bazowej płytki z układem FPGA.
+
+`img:pcbSchemat`
+
+Do konwersji wykorzystano układy MAX9157 firmy Maxim, które:
+
+* obsługują cztery kanały transmisji CMOS -> LVDS lub LVDS -> CMOS,
+* umożliwiają transmisję strumieni o przepływności do 200Mbps,
+* odbierają sygnały różnicowe o poziomach od 100mV aż do Vcc,
+* posiadają obwody zabezpieczające wejścia (fail-save input).
+
 
 ## Struktura generowanych sygnałów ##
 
 ### Przekaz informacyjny ###
-System lokalizacyjny, do realizacji swoich funkcji, wykorzystuje sekwencje sygnałów przesyłanych w łączu radiowym. Nadajniki przesyłają zestandaryzowane sekwencje bitów, których każde pole składowe reprezentuje wykonanie odpowiednich procedur w odbiorniku. Po detekcji przesyłanej sekwencji odbiornik realizuje funkcję określoną przez ciąg bitów. Strukturę logiczną przesyłanych danych prezentuje rysunek `img:SchPak1`.
+System lokalizacyjny, do realizacji swoich funkcji, wykorzystuje sekwencje sygnałów przesyłanych w łączu radiowym. Nadajniki przesyłają zestandaryzowane sekwencje bitów, których każde pole składowe reprezentuje wykonanie odpowiednich procedur w odbiorniku. Po detekcji przesyłanej sekwencji odbiornik realizuje funkcję określoną przez ciąg bitów. Struktura logiczna przesyłanych danych została zaprezentowana na rysunku `img:SchPak1`.
 
 ![Struktura pakietu](./img/pakiet.png "img:SchPak1")
 
@@ -92,7 +121,6 @@ W schemacie pakietu informacyjnego możemy wyróżnić kilka pól, które urucha
 * STRS
 * BSTR
 
-`(rozwinięcia skrótów po angielsku)`
 Każdy z nich odpowiada za inicjalizację odpowiedniego procesu w odbiorniku, które po zakończeniu umożliwiają określenie różnicy czasów propagacji sygnałów i finalnie obliczenie pozycji. 
 
 `Opisać rolę każdego fragmentu pakietu`
@@ -169,7 +197,7 @@ Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. U
 `diagram stanów + wyjścia`
 
 ### Dzielniki częstotliwości
-Ze względu na różne czasy trwania generowanych impulsów do różnych bloków należy dostarczyć sygnał zegarowy o różnej częstotliwości. Aby to osiągnąć należy wykorzystać elementy, które podzielą częstotliwość o odpowiednią wartość, co skutkuje wydłużeniem czasu trwania okresu zegara. 
+Ze względu na różne czasy trwania generowanych w układzie należy wytworzyć sygnały zegarowe o różnej częstotliwości, przy czym należy pamiętać o zapewnieniu synchronizmu między nimi. Aby to osiągnąć należy wykorzystać elementy, które podzielą częstotliwość o odpowiednią wartość, co skutkuje wydłużeniem czasu trwania okresu zegara. 
 
 Proste dzielniki mogą być wykonane jako złożenie kilku przerzutników. W najtrywialnijszym przypadku dzielenia przez 2 implementacja takiego bloku funkcjonalnego składa się z jednego przerzutnika D oraz negatora wpiętego w pętlę sprzężenia zwrotnego do wejścia D.
 `img:clkDiv2`
