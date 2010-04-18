@@ -2,37 +2,25 @@
 {:toc}
 
 ___
-# Wstęp #
+# Wstęp 
 
-## Geneza ##
+# Założenia 
 
-## Wprowadzenie do pracy ##
+# Systemy lokalizacyjne UWB
 
-# Wprowadzenie do dziedziny #
+## Sygnały UWB 
 
-## Sygnały UWB ##
+### Charakterystyka
 
-## Systemy lokalizacyjne ##
+### Propagacja
 
-## Programowalne układy cyfrowe ##
+### Możliwości
 
-### Geneza, możliwości, sposób implementacji ###
+## Systemy TDOA
 
-### VHDL ###
+## System opracowany w PMR przez mgr Kosińskiego (tytuł roboczy)
 
-### Układy i środowisko firmy Xilinx ###
-
-#### Spartan3 ####
-
-#### ISE Web Pack ####
-
-# Opis rozwiązania #
-
-## Usprawnienia istniejącego systemu ##
-
-### Dotychczasowe działanie ###
-
-`Wstęp`
+### Architektura
 
 Opracowany system składa się z z pięciu nadajników (układ cyfrowy CPLD, generator UWB oraz antena) połączonych szeregowo. Pierwszy z nich jest nadajnikiem nadrzędnym, który:
 
@@ -43,7 +31,28 @@ Każdy z nadajników, po otrzymaniu sekwencji sterującej, wysyła impulsy w ł�
 
 `Dokładniejszy opis`
 
-### Problem ###
+`zdjęcie z safespota`
+
+### Sygnały w łączu radiowym
+
+`schemat uproszczonego pakietu`
+
+
+# Programowalne układy cyfrowe FPGA
+
+## Geneza, możliwości, sposób implementacji 
+
+## VHDL 
+
+## Układy i środowisko firmy Xilinx 
+
+### Spartan3
+
+### ISE Web Pack
+
+# System sterowania nadajnikiem (częśc hardware\'owa)
+
+## Usprawnienia dotychczasowego systemu??
 
 System w swojej dotychczasowej wersji działał bardzo dobrze, lecz nie był pozbawiony wad. Głównym problemem, który pojawiał się w trakcie eksploatacji, był brak możliwości szybkiej zmiany parametrów systemu. Każdy z nadajników systemu posiadał zintegrowany układ CPLD, w którego pamięci zapisane zostały prametry konfiguracyjne. Rozwiązanie to jest bardzo wygodne z punktu widzenia konstruktora - tworzymy kilka takich samych układów, które różnią się tylko bitami zapisanymi w pamięci. Jednakże drobna zmiana parametrów wymaga programowania każdego z układów oddzielnie. Jeśli gniazdo JTAG zostało dodatkowo umieszczone w trudno dostępnym miejscu - nie jest to proces łatwy. Ponadto dla każdej z konfiguracji CPLD należy przeprowadzić syntezę układu, co powodowało duże nakłady czasowe. Taki proces uniemożliwiał wręcz przeprowadzanie wydajnych eksperymentów ze względu na:
 
@@ -51,8 +60,6 @@ System w swojej dotychczasowej wersji działał bardzo dobrze, lecz nie był poz
 * problemy z programowaniem każdegu układu z osobna.
 
 W związku z tymi problemami zdecydowano się wprowadzić udoskonalenia, które zlikwidują wyżej wymienione błędy przy jednoczesnym zachowaniu wszystkich funkcji układu
-
-### Jak można poprawić? ###
 
 Jednym z możliwych uproszczeń systemu jest wprowadzenie centralnego układu sterującego  który zapewni:
 
@@ -62,10 +69,11 @@ Jednym z możliwych uproszczeń systemu jest wprowadzenie centralnego układu st
 
 W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odpowiednią konfiguracją oraz układami wejścia-wyjścia, które zostaną przedstawione w kolejnych rozdziałach. 
 
-## Założenia programu ##
+## Architektura systemu
 
-    Todo later
-    * zaznaczyć wyraźnie co się dzieje w kablach, a co w łączu radiowym
+## Moduł FPGA
+
+## Moduł konwertera CMOS - LVDS
 
 ## Struktura generowanych sygnałów ##
 
@@ -114,8 +122,6 @@ Powyższym rozważaniom nie podlega jednak sygnał preambuły, który nadawany j
 
 ### Modulacja ###
 
-#### W łączu radiowym ####
-
 W łączu radiowym wykorzystano modulację *OOK* (OOK - On-Off Keying), której ideę prezentują rysunki `img:OOK1` oraz `img:OOK2`
 
 ![Sygnał oryginalny - źródło: National Instruments (www)](./img/OOK_1.gif "img:OOK1")
@@ -124,7 +130,7 @@ W łączu radiowym wykorzystano modulację *OOK* (OOK - On-Off Keying), której 
 
 Według teorii logicznej jedynce odpowiada wysłanie nośnej (lub, tak jak w omawianym przypadku, impulsu UWB). Brak sygnału to logiczne zero.
 
-#### W linii transmisyjnej ####
+## Standard LVDS
 
 `informacja o wyzwalaniu na zbocze generatora`
 
@@ -138,11 +144,12 @@ Do transmisji danych w kablach doprowadzających sygnały do generatorów stosow
 
 `źródło!!! ` Różnicowy standard transmisji polega na wykorzystaniu dwóch skręconych żył jako linii sygnałowych (o dwóch różnych polaryzacjach) zamiast po jednej sygnałowej i masy. Nadajnik wpuszcza prąd o małym natężeniu (zazwyczaj *i = 3.5 \[mA\]*), który w odbiorniku przepływa przez rezystor dopasowujący wejście do linii transmisyjnej (zazwyczaj *R = 100 - 150 \[ohm\]*). Pierwszym stopniem odbiornika jest wzmacniacz o wejściu różnicowym o dużym wzmocnieniu składowej różnicowej, co zapewnia poprawny odbiór niewielkich sygnałów. Ponadto takie układy posiadają duże tłumienie składowej wspólnej (sumacyjnej), co chroni przed zakłóceniami elektromagnetycznymi. Jeśli takowe występują to wywołują zakłócenia w obu liniach sygnałowych jednocześnie.
 
-## Układ FPGA ##
-### Wprowadzenie
+
+# Konfiguracja FPGA (część software\'owa)
+## Wprowadzenie
 Opisane w rozdziale `Programowalne układy cyfrowe` struktury FPGA są bardzo wygodnym narzędziem do budowania elektronicznych systemów cyfrowych. Dzięki możliwości zaimplementowania wielu klasycznych elementów (liczniki, rejestry, automaty stanów) i szerokiego ich rozszerzania można zaprojektować nawet bardzo złożone układy. Podział na struktury hierarchiczne ułatwia zarówno budowanie układu jak i jego późniejszą analizę.
 
-### Interfejs zewnętrzny i opcje konfiguracyjne
+## Interfejs zewnętrzny i opcje konfiguracyjne
 `opisanie sterowania układem, brak implementacji póki co`
 `jakie stany (elektryczne i logiczne) co wyzwalają`
 `poziomy napięć?`
@@ -152,16 +159,16 @@ Opisane w rozdziale `Programowalne układy cyfrowe` struktury FPGA są bardzo wy
 * `przesuniecia`
 * `wyjścia` - sześć wyjść wygenerowanych sygnałów 
 
-### Top module
+## Top module
 Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. Układ ten definiuje wszystkie wymienione wcześniej wejścia oraz wyjscia oraz połączenia między poszczególnymi blokami składowymi. Na rysunku `img:topModule` możemy wyróżnić
 * `automat` - który steruje działaniem pozostałych bloków,
 * `trx1-6` - zestaw bloków generujących sygnały do poszczególnych nadajników,
 * `dzielniki częstotliwości` - bloki umożliwiające dostosowanie sygnału zegarowego do potrzeb różnych bloków funkcjonalnych
 
-#### Automat sterujący
+### Automat sterujący
 `diagram stanów + wyjścia`
 
-#### Dzielniki częstotliwości
+### Dzielniki częstotliwości
 Ze względu na różne czasy trwania generowanych impulsów do różnych bloków należy dostarczyć sygnał zegarowy o różnej częstotliwości. Aby to osiągnąć należy wykorzystać elementy, które podzielą częstotliwość o odpowiednią wartość, co skutkuje wydłużeniem czasu trwania okresu zegara. 
 
 Proste dzielniki mogą być wykonane jako złożenie kilku przerzutników. W najtrywialnijszym przypadku dzielenia przez 2 implementacja takiego bloku funkcjonalnego składa się z jednego przerzutnika D oraz negatora wpiętego w pętlę sprzężenia zwrotnego do wejścia D.
@@ -170,13 +177,17 @@ Proste dzielniki mogą być wykonane jako złożenie kilku przerzutników. W naj
 W bardziej złożonych przypadkach warto posłużyć się językiem VHDL, w którym można zaimplementować taki blok, którego współczynnik podziału będzie dowolnie definiowalnym parametrem.
 `fragment kodu vhdl`
 
-### "Single TRX Generator"
-#### Automat sterujący
-#### ROM 
-#### Generator tablicy prawdy
+## "Single TRX Generator"
+### Automat sterujący
+### ROM 
+### Generator tablicy prawdy
+
+
+
 ## Interfejs 
 # Badania programu 
 # Dodatki
 ## Bibliografia
+* `bib:LVDS` Low-Voltage Differential Signaling, International Engineering Consortium, 
 
 
