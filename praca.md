@@ -111,6 +111,12 @@ Ze względu na dużą liczbę peryferiów umieszczonych na płytce z FPGA omawia
 
 Zaprezentowany na rysunku `img:pcbLayout` layout płytki został stworzony w programie Altium Designer 6. Rozmieszczenie wyprowadzeń w układach MAX9157 jest bardzo przyjazne dla konstruktura i ułatwia prowadzenie ścieżek (wejścia po jednej stronie, wyjścia po drugiej, przecięcie płaszyczyny masy idealnie w połowie układu). Mimo to nie obyło się bez problemów z poprowadzeniem zasilania, co wymusiło dolutowanie zwor do płytki.
 
+`img:pcbPhoto`
+
+Uruchamianie układu konwertera przebiegło `z problemami/bez większych problemów`. Pierwszym krokiem było sprawdzenie doprowadzeń zasilania poprzez podłączenie napięcia stałego do ścieżek rozprowadzających je po układzie. Napięcie na wyjściu stabilizatora wyniosło 3.3V.
+
+`dalej...`
+
 ## Struktura generowanych sygnałów ##
 
 ### Przekaz informacyjny ###
@@ -197,10 +203,19 @@ Opisane w rozdziale `Programowalne układy cyfrowe` struktury FPGA są bardzo wy
 ## Top module
 Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. Układ ten definiuje wszystkie wymienione wcześniej wejścia oraz wyjscia oraz połączenia między poszczególnymi blokami składowymi. Na rysunku `img:topModule` możemy wyróżnić
 * `automat` - który steruje działaniem pozostałych bloków,
-* `trx1-6` - zestaw bloków generujących sygnały do poszczególnych nadajników,
-* `dzielniki częstotliwości` - bloki umożliwiające dostosowanie sygnału zegarowego do potrzeb różnych bloków funkcjonalnych
+* `trx1..6` - zestaw bloków generujących sygnały do poszczególnych nadajników,
+* `dzielniki częstotliwości` - bloki umożliwiające dostosowanie częstotliwości sygnału zegarowego do potrzeb różnych bloków funkcjonalnych
 
 ### Automat sterujący
+Bloki generujące sygnały są sterowane przez automat zarządzający, który:
+
+* czeka na polecenie użytkownika do rozpoczęcia generacji,
+* uruchamia pierwszy generator,
+* czeka na informację zwrotną, po otrzymaniu której uruchamia kolejny generator
+* analogicznie uruchamia kolejne generatory
+* `umożliwia generację pojedynczą lub ciągłą`
+* `umożliwia sterowanie odstępem międzybitowym`
+
 `diagram stanów + wyjścia`
 
 ### Dzielniki częstotliwości
