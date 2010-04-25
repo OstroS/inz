@@ -26,7 +26,7 @@ Opracowany system składa się z z pięciu nadajników (układ cyfrowy CPLD, gen
 
 * decyduje o rozpoczęciu procesu generacji i wysyłaniu impulsów w łączu radiowym,
 * uruchamia kolejny nadajnik,
-* jest źródłem sygnału zegarowego 
+* jest źródłem sygnału zegarowego.
 
 Każdy z kolejnych nadajników otrzymuje sygnał zegara oraz sygnał wyzwalający. Zegar jest regenerowany i wysyłany dalej, po czym jest używany jako lokalny sygnał zegarowy, dzięki czemu wszystkie nadajniki są ze sobą zsynchronizowane. Po otrzymaniu sekwencji sterującej, każdy nadajnik wysyła impulsy w łączu radiowym, które sterują pracą odbiornika. Odpowiednie sekwencje uruchamiają i zatrzymują pomiar czasu, a także niosą treść informacyjną umożliwiającą zidentyfikowanie konretnego nadajnika. Odbiornik, zgodnie ze sposobem działania systemów typu TDOA, mierzy różnicę czasów pomiędzy otrzymaniem sygnałów z poszczególnych nadajników. Po wysłaniu sekwencji z ostatniego nadajnika pomiar się kończy i odbiornik przechodzi do obliczania pozycji korzystając z zaprogramowanych algorytmów.
 
@@ -55,12 +55,12 @@ Każdy z kolejnych nadajników otrzymuje sygnał zegara oraz sygnał wyzwalając
 
 ## Usprawnienia dotychczasowego systemu??
 
-Najważniejszym celem pracy inżynierskiej jest usprawnienie i rozszerzenie funkcjonalności omówionego wcześniej systemu, który mimo iż działał bardzo dobrze, nie był pozbawiony wad. Głównym problemem, który pojawiał się w trakcie eksploatacji, był brak możliwości szybkiej zmiany parametrów systemu. Każdy z nadajników systemu posiadał zintegrowany układ CPLD, w którego pamięci zapisane zostały prametry konfiguracyjne. Rozwiązanie to jest bardzo wygodne z punktu widzenia konstruktora - tworzymy kilka takich samych układów, które różnią się tylko bitami zapisanymi w pamięci. Jednakże drobna zmiana parametrów wymaga programowania każdego z układów oddzielnie. Jeśli gniazdo JTAG zostało dodatkowo umieszczone w trudno dostępnym miejscu - nie jest to proces łatwy. Ponadto dla każdej z konfiguracji CPLD należy przeprowadzić syntezę układu, co powodowało duże nakłady czasowe. Taki proces uniemożliwiał wręcz przeprowadzanie wydajnych eksperymentów ze względu na:
+Najważniejszym celem pracy inżynierskiej jest usprawnienie i rozszerzenie funkcjonalności omówionego wcześniej systemu, który mimo iż działał bardzo dobrze, nie był pozbawiony wad. Głównym problemem, który pojawiał się w trakcie eksploatacji, był brak możliwości szybkiej zmiany parametrów systemu. Każdy z nadajników posiadał zintegrowany układ CPLD, w którego pamięci zapisane zostały prametry konfiguracyjne. Rozwiązanie to jest bardzo wygodne z punktu widzenia konstruktora - tworzymy kilka takich samych układów, które różnią się tylko bitami zapisanymi w pamięci. Jednakże drobna zmiana parametrów wymaga programowania każdego z układów oddzielnie. Jeśli gniazdo JTAG zostało dodatkowo umieszczone w trudno dostępnym miejscu - nie jest to proces łatwy. Ponadto dla każdej z konfiguracji CPLD należy przeprowadzić syntezę układu, co powodowało duże nakłady czasowe. Taki proces uniemożliwiał wręcz przeprowadzanie wydajnych eksperymentów ze względu na:
 
 * czas dokonywanych zmian,
 * problemy z programowaniem każdegu układu z osobna.
 
-`Dodaktowym problemem była niedoskonała sekwencja bitów przesyłana w łączu radiowym. Bitów sterujących było zbyt mało, a preambuła każdego z pakietów nie spełniała do końca swojej roli. Przetwornik A/C umieszczony w pętli ARW wymaga sekwencji dłuższej oraz taktowanej wyższym zegarem.`
+`Istotnym problemem była także niedoskonała sekwencja bitów przesyłana w łączu radiowym. Bitów sterujących było zbyt mało, a preambuła każdego z pakietów nie spełniała do końca swojej roli. Przetwornik A/C umieszczony w pętli ARW wymaga dłuższej sekwencji htaktowanej wyższym zegarem.`
 
 W związku z tymi problemami zdecydowano się wprowadzić udoskonalenia, które zlikwidują wyżej wymienione błędy przy jednoczesnym zachowaniu wszystkich funkcji układu
 
@@ -90,7 +90,7 @@ Układ FPGA Spartan3 firmy Xilinx posiada wyjścia w prostym i popoularnym stand
 * stan wysoki => 3,3V `marginesy`
 * stan niski => 0V
 
-Taki sposób kodowania stanów logicznych jest bardzo dobry dla układów pracujących blisko siebie, `połączonych krótkimi połączeniami`. Jednakże przy przesyłaniu sygnałów długimi kablami nie zdaje on egzaminu, gdyż jest bardzo wrażliwy na zakłócenia elektromagnetyczne. `co jeszcze?`
+Taki sposób kodowania stanów logicznych jest bardzo dobry dla układów pracujących blisko siebie z krótkimi połączeniami. Jednakże przy przesyłaniu sygnałów długimi kablami nie zdaje on egzaminu, gdyż jest bardzo wrażliwy na zakłócenia elektromagnetyczne. `co jeszcze?`
 
 W związku z tym zdecydowano, iż do transmisji sygnałów sterujących zostanie wykorzystany różnicowy standard przesyłania danych LVDS (`patrz podrozdział LVDS`). Konwerter sygnałów został zrealizowany jako moduł na oddzielnej płytce drukowanej ze złączem umożliwiającym łatwe dołączenie do bazowej płytki z układem FPGA.
 
@@ -138,7 +138,7 @@ Każdy z nich odpowiada za inicjalizację odpowiedniego procesu w odbiorniku, kt
 
 `Opisać rolę każdego fragmentu pakietu`
 
-1. **PRMB** - preambuła. Składa się z ok. 20 impulsów. Nie niesie treści informacyjnej, jednakże jest bardzo istotna z energetycznego punktu widzenia. Umożliwia bowiem układom odbiornika określenie poziomu sygnału, z jakimś będą transmitowane kolejne bity. Wejściowy układ *ARW* (ARW - Automatyczna Regulacja Wzmocnienia) dostosowuje parametry (`jakie? czy tylko wzmocnienie, czy może coś jeszcze?`) wzmacniacza wejściowego do poziomu mocy odebranej preambuły. Po ustaleniu tych parametrów odbiornik jest gotowy do odebrania i detekcji kolejnych bitów, które już niosą konkretną treść informacyjną.
+1. **PRMB** - preambuła. Składa się z ok. 20 impulsów. Nie niesie treści informacyjnej, jednakże jest bardzo istotna z energetycznego punktu widzenia. Umożliwia bowiem układom odbiornika określenie poziomu sygnału, z jakimś będą transmitowane kolejne bity. Wejściowy układ *ARW* (ARW - Automatyczna Regulacja Wzmocnienia) dostosowuje parametry wzmacniacza wejściowego do poziomu mocy odebranej preambuły. Po ustaleniu tych parametrów odbiornik jest gotowy do odebrania i detekcji kolejnych bitów, które już niosą konkretną treść informacyjną.
 1. **STPS** - odblokowanie zatrzymania pomiaru czasu.
 1. **BSTP** - zatrzymanie pomiaru czasu.
 1. **IDN** - identyfikator nadajnika. `wyjaśnić czemu taki długi, nawiązać do procesów które trwają w tym czasie w odbiorniku`
@@ -163,7 +163,7 @@ Powyższym rozważaniom nie podlega jednak sygnał preambuły, który nadawany j
 
 ### Modulacja ###
 
-W łączu radiowym wykorzystano modulację *OOK* (OOK - On-Off Keying), której ideę prezentują rysunki `img:OOK1` oraz `img:OOK2`
+Do przesyłania danych w łączu radiowych często wykorzystuje się modulację *OOK* (OOK - On-Off Keying), której ideę prezentują rysunki `img:OOK1` oraz `img:OOK2`
 
 ![Sygnał oryginalny - źródło: National Instruments (www)](./img/OOK_1.gif "img:OOK1")
 
@@ -171,9 +171,9 @@ W łączu radiowym wykorzystano modulację *OOK* (OOK - On-Off Keying), której 
 
 Według teorii logicznej jedynce odpowiada wysłanie nośnej (lub, tak jak w omawianym przypadku, impulsu UWB). Brak sygnału to logiczne zero.
 
-## Standard LVDS
+W omawianym systemie zastosowano zmodyfikowaną wersję tej modulacji. W łączu radiowym transmitowane są sygnału UWB, w związku z czym logicznej jedynce odpowiada generacja impulsu; natomiast logiczne zero to brak nadawania. Zastosowane generatory UWB są wyzwalane narastającym zboczem sygnału wejściowego. W związku z tym, należy im dostarczyć przebieg wejściowy, który zmieni swój stan z 0 na 1 w momencie pożądanej generacji. Ma to istotne znaczenie z punktu widzenia kształtowania sygnałów w układzie FPGA.
 
-`informacja o wyzwalaniu na zbocze generatora`
+## Standard LVDS
 
 Do transmisji danych w kablach doprowadzających sygnały do generatorów stosowany jest standard LVDS `(rys. img:LVDS)`. Jest to różnicowy sposób transmisji danych, gwarantujący:
 
@@ -225,14 +225,39 @@ Proste dzielniki mogą być wykonane jako złożenie kilku przerzutników. W naj
 `img:clkDiv2`
 
 W bardziej złożonych przypadkach warto posłużyć się językiem VHDL, w którym można zaimplementować taki blok, którego współczynnik podziału będzie dowolnie definiowalnym parametrem.
-`fragment kodu vhdl`
+`fragment kodu vhdl (kilka linijek)`
 
 ## "Single TRX Generator"
+Na najwyższym stopniu hierarchii umieszczonych zostało 6 układów generujących pożądane sygnały do poszczególnych nadajników. Układy te reprezentuje makroblok o następującej strukturze:
+
+`img:struktura makrobloku`
+
+Sygnały wejściowe:
+* **clk** - główny sygnał zegarowy synchronizujący pracę układu (100 \[MHz\]),
+* **clk preamb** - sygnał zegarowy taktujący generowanie preambuły (`ile?`),
+* **clk data** - sygnał zegarowy taktujący generowanie bitów informacyjnych  (`ile?`),
+* **start** - wyzwolenie generacji sekwencji bitów,
+* **rst** - reset asynchroniczny.
+
+Sygnały wyjściowe
+* `out` - główne wyjście generowanej sekwencji,
+* `finish_preamb` - sygnał informujący o zakończeniu generacji preambuły,
+* `finish` - sygnał informujący o zakończeniu generacji całej sekwencji.
+
+Każdy z nich posiada bliźniaczą wewnętrzną strukturę, która składa się z:
+
+* zestawu wejść,
+* automatu sterującego,
+* dwóch liczników,
+* układu kombinacyjnego,
+* multiplekserów wyjściowych.
+
 ### Automat sterujący
+
 ### ROM 
-### Generator tablicy prawdy
-
-
+#### Generator tablicy prawdy
+### Multipleksery wyjściowe
+### Testowanie
 
 ## Interfejs 
 # Badania programu 
