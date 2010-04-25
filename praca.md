@@ -253,10 +253,37 @@ Każdy z nich posiada bliźniaczą wewnętrzną strukturę, która składa się 
 * multiplekserów wyjściowych.
 
 ### Automat sterujący
+Pracą makrobloku steruje główny automat, który uruchamia sekwencjnie kolejne bloki zgodnie z diagramem stanów przedstawionym na rysunku `img:diagramStanow`.
+
+`img:diagramStanow`
+
+Automat, będąc w stanie początkowym, czeka na wyzwolenie sygnałem start, który pochodzi układów na wyższym poziomie hierarchii. Gdy sygnał ten pojawi się uruchomiona zostaje generacja preambuły.
+
+Za proces ten odpowiada licznik `cnt_20`, który jest taktowany zegarem 50 \[MHz\], co odpowiada częstotliwości sygnału preambuły. Uruchomienie licznika powoduje wysłanie na wyjście `preamb` sygnału o tej właśnie częstotliwości. Wyjściowy multiplekser jest w stanie "0, czyli sygnał preambuły pojawia się na pinie `out` makrobloku. 
+
+Po przepełnieniu licznika `cnt_20` wysyłany jest impuls potwierdzający do głównego automatu. Zmiana stanu rozpoczyna kolejny proces - generację sekwencji informacyjnej - poprzez uruchomienie licznika `cnt_72`, którego wyjście adresuje tablicę prawdy. Odpowiedź `układu pamięciowego` przechodzi przez multiplekser `kształtujący` oraz wyjściowy, którego stan główny automat ustawił na "1". Na wyjściu `out` pojawia się sekwencja bitów informacyjnych.
 
 ### ROM 
+Sekwencja informacyjna, przesyłana do każdego z nadajników, posiada unikalny charaketer i musi być zapisana w konfiguracji układu. Należało zatem wprowadzić element, który przechowywałby dane oraz umożliwiał w łatwy sposób ich ewentualną zmianę.
+
+Rozważano zastosowanie specyficznych dla układów z rodziny Xilinx Spartan3 rozwiązań, które umożliwiają wygnerowanie w strukturze FPGA pamięci typu *Read Only Memory*. Jednakże, ze względu na małą uniwersalność takiej realizacji, zdecydowane o stworzeniu prosztszej i bardziej "przenośnej" implementacji. Zamiast pamięci ROM użyto klasycznego układu kombinacyjnego w postaci tablicy prawdy. Jej opis w języku VHDL nadaje uniwersalności i pozwala przeprowadzić syntezę dla dowolnych układów FPGA.
+
+`więcej konkretów`
+
 #### Generator tablicy prawdy
+
+`mała czytelność kodu i kłopotliwa edycja => stworzenie programiku do generowania automatycznego takiej tablicy`
+
+`screenshot`
+
 ### Multipleksery wyjściowe
+
+`kształtowanie przez ciachanie`
+`rozwiązanie z bramką *and* - dlaczego złe i dlaczego teraz lepiej`
+`multiplekser do zastosowań zegarowych`
+
+### Realizacja regulacji przesunięć
+
 ### Testowanie
 
 ## Interfejs 
