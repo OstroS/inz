@@ -30,14 +30,15 @@ Opracowany system składa się z z pięciu nadajników (układ cyfrowy CPLD, gen
 
 Każdy z kolejnych nadajników otrzymuje sygnał zegara oraz sygnał wyzwalający. Zegar jest regenerowany i wysyłany dalej, po czym jest używany jako lokalny sygnał zegarowy, dzięki czemu wszystkie nadajniki są ze sobą zsynchronizowane. Po otrzymaniu sekwencji sterującej, każdy nadajnik wysyła impulsy w łączu radiowym, które sterują pracą odbiornika. Odpowiednie sekwencje uruchamiają i zatrzymują pomiar czasu, a także niosą treść informacyjną umożliwiającą zidentyfikowanie konretnego nadajnika. Odbiornik, zgodnie ze sposobem działania systemów typu TDOA, mierzy różnicę czasów pomiędzy otrzymaniem sygnałów z poszczególnych nadajników. Po wysłaniu sekwencji z ostatniego nadajnika pomiar się kończy i odbiornik przechodzi do obliczania pozycji korzystając z zaprogramowanych algorytmów.
 
-`Dokładniejszy opis`
-
 ![Schemat układu ](./img/kosinski.png "img:SchKosinski")
 
 ### Sygnały w łączu radiowym
 
+W łączu radiowym systemu nadawane były pakiety o strukturze przedstawionej na rysunku `img:SygKosinski`.
+
 ![Uproszczony schemat sygnałów w łączu radiowym ](./img/kosinski_sygnaly.png "img:SygKosinski")
 
+Preambuła umożliwia wysterowanie układu automatycznej regulacji wzmocnienia. Następnie przesyłana jest komenda STOP, która zatrzymuje pomiar czasu. Bity identyfikatora umożliwiają odbiornikowi rozpoznanie źródła przesyłanego sygnału. Pakiet kończy komenda uruchomiająca pomiar.
 
 # Programowalne układy cyfrowe FPGA
 
@@ -70,7 +71,6 @@ Jednym z możliwych rozwiązań jest wprowadzenie centralnego układu sterujące
 * możliwość ustawienia parametrów konfiguracyjnych układu w jednym miejscu,
 * łatwą rozbudowę i skalowalność,
 
-
 W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odpowiednią konfiguracją oraz układami wejścia-wyjścia, które zostaną przedstawione w kolejnych rozdziałach. 
 
 ## Architektura systemu
@@ -80,7 +80,7 @@ Takie połącznie posiada zdecydowanie więcej zalet, kosztem niewielkiej kompli
 
 `img:archSystemu`
 
-Poglądową architekturę systemu zaprezentowano na rysunku `img:archSystemu`. Układ FPGA pełni główną funkcję sterującą. Operator systemu `może ustawiać parametry` oraz wyzwolić działanie systemu. Sterownik generuje odpowiednie sygnały `(zgodnie z ustawieniami)` wysyłając je na wyjścia, po czy następuje konwersja standardu przesyłania danych do potrzeb linii transmisyjnych oraz odbiorników. Z konwertera sygnały przesyłane są kablami w standardzie RJ45 (4 pary symetryczne) do rozdzielaczy, gdzie są przekazywane do odpowiednich nadajników.
+Poglądową architekturę systemu zaprezentowano na rysunku `img:archSystemu`. Układ FPGA pełni główną funkcję sterującą. Operator systemu `może ustawiać parametry` oraz wyzwolić działanie systemu. Sterownik generuje odpowiednie sygnały `(zgodnie z ustawieniami)` wysyłając je na wyjścia, po czym następuje konwersja standardu przesyłania danych do potrzeb linii transmisyjnych oraz odbiorników. Z konwertera sygnały przesyłane są kablami w standardzie RJ45 (4 pary symetryczne) do rozdzielaczy, gdzie są przekazywane do odpowiednich nadajników.
 
 ## Moduł FPGA
 
@@ -148,16 +148,14 @@ Krótkiego wyjaśnienia wymaga kolejność transmitowanych pakietów - najpierw 
 ### Parametry czasowe ###
 
 System transmisyjny oraz charakterystyka kanału radiowego narzucają określone wymagania co do parametrów parametrów czasowych przesyłanych sekwencji.
+
 ![Odpowiedź impulsowa kanału radiowego - przykład](./img/impulseResponse.gif "img:kanalRadiowy")
 
 Na rysunku `img:kanalRadiowy - rysunek poglądowy ściągnięty z internetu` przedstawiono przykładową charakterystykę odpowiedzi impulsowej kanału radiowego po pobudzeniu impulsem UWB. Można zauważyć kilka charakterystycznych fragmentów. Pierwszy, wyraźny pik jest sygnałem, który dotarł bezpośrednio od nadajnika do odbiornika. Po krótkiej przerwie pojawiają się kolejne fragmenty sygnału, które powstały poprzez niekorzystne zjawisko propagacji wielodrogowej (sygnał nadany odbija się od dużych (w stosunku do długości fali) obiektów i dociera do odbiornika z opóźnieniem). Te składowe mogą zaburzyć poprawność odbioru, gdyż urządzenie odbiorcze nie jest w stanie rozróżnić impulsów bezpośrednich od odbitych. 
 
 W związku z powyższym faktem na etapie projektowania sygnałów transmitowanych drogą radiową należy zwrócić szczególną uwagę na odstęp miedzybitowy. Odpowiedni jego dobór jest kompromisem pomiędzy czasem działania systemu (krótki odstęp), a uchronieniem się od składowych wielodrogowych (większy odstęp). W trakcie badań poprzedzających projektowanie systemu stwierdzono, iż dla zakładanych warunków pracy odstęp międzybitowy na poziomie *200-300 \[ns\]* jest całkowicie wystarczająćy i skutecznie wyeliminuje omawiany problem.
 
-Z określonego odstępu międzybitowego wynika wprost częstotliwość z jaką należy generować impulsy. 
-`todo`
-
-Powyższym rozważaniom nie podlega jednak sygnał preambuły, który nadawany jest z czasem powtarzania impulsów równym *20 \[ns\]*.
+Z określonego odstępu międzybitowego wynika wprost częstotliwość z jaką należy generować impulsy i zawiera się w przedziale 3.33 - 5 \[MHz\]. Powyższym rozważaniom nie podlega jednak sygnał preambuły, który nadawany jest z czasem powtarzania impulsów równym *20 \[ns\]*, wobec czego częstotliwość taktowania układów generowania preambuły wynosi 50 \[MHz\].
 
 ### Modulacja ###
 
@@ -183,7 +181,6 @@ Do transmisji danych w kablach doprowadzających sygnały do generatorów stosow
 
 `bib:LVDS` Różnicowy standard transmisji polega na wykorzystaniu dwóch skręconych żył jako linii sygnałowych (o dwóch różnych polaryzacjach) zamiast po jednej sygnałowej i masy. Nadajnik wpuszcza prąd o małym natężeniu (zazwyczaj *i = 3.5 \[mA\]*), który w odbiorniku przepływa przez rezystor dopasowujący wejście do linii transmisyjnej (zazwyczaj *R = 100 - 150 \[ohm\]*). Pierwszym stopniem odbiornika jest wzmacniacz o wejściu różnicowym o dużym wzmocnieniu składowej różnicowej, co zapewnia poprawny odbiór niewielkich sygnałów. Ponadto takie układy posiadają duże tłumienie składowej wspólnej (sumacyjnej), co chroni przed zakłóceniami elektromagnetycznymi. Jeśli takowe występują to wywołują zakłócenia w obu liniach sygnałowych jednocześnie.
 
-
 # Konfiguracja FPGA (część software\'owa)
 ## Wprowadzenie
 Opisane w rozdziale `Programowalne układy cyfrowe` struktury FPGA są bardzo wygodnym narzędziem do budowania elektronicznych systemów cyfrowych. Dzięki możliwości zaimplementowania wielu klasycznych elementów (liczniki, rejestry, automaty stanów) i szerokiego ich rozszerzania można zaprojektować nawet bardzo złożone układy. Podział na struktury hierarchiczne ułatwia zarówno budowanie układu jak i jego późniejszą analizę.
@@ -199,7 +196,7 @@ Opisane w rozdziale `Programowalne układy cyfrowe` struktury FPGA są bardzo wy
 * `wyjścia` - sześć wyjść wygenerowanych sygnałów 
 
 ## Top module
-Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. Układ ten definiuje wszystkie wymienione wcześniej wejścia oraz wyjscia oraz połączenia między poszczególnymi blokami składowymi. Na rysunku `img:topModule` możemy wyróżnić
+Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. Układ ten definiuje wszystkie wymienione wcześniej wejścia, wyjscia oraz połączenia między poszczególnymi blokami składowymi. Na rysunku `img:topModule` możemy wyróżnić
 * `automat` - który steruje działaniem pozostałych bloków,
 * `trx1..6` - zestaw bloków generujących sygnały do poszczególnych nadajników,
 * `dzielniki częstotliwości` - bloki umożliwiające dostosowanie częstotliwości sygnału zegarowego do potrzeb różnych bloków funkcjonalnych
@@ -207,6 +204,7 @@ Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. U
 ### Automat sterujący
 
 ![Automat sterujący](./img/blok_main_automat.png "img:blokMainAutomat")
+
 Bloki generujące sygnały są sterowane przez automat zarządzający, który:
 
 * czeka na polecenie użytkownika do rozpoczęcia generacji,
@@ -217,10 +215,15 @@ Bloki generujące sygnały są sterowane przez automat zarządzający, który:
 * `umożliwia sterowanie odstępem międzybitowym`
 
 ![Automat sterujący](./img/diagram_abstract.png "img:abstractDiagram")
+
 ![Automat sterujący](./img/diagram_closer.png "img:closerDiagram")
 
+Na pierwszym z powyższych rysunków zaprezentowano diagram stanów automatu sterującego, gdzie każdy proces generacji opisano pojedynczym stanem. Drugi z rysunków pokazuje fragment pierwszego z uwzględnieniem konkretnych stanów rzeczywistego automatu. Jest to automat typu Mealy'ego, gdyż wyjścia układu zależne są nie tylko od aktualnego stanu, ale także od wartości logicznej sygnałów wejściowych. 
+
 ### Dzielniki częstotliwości
+
 ![Dzielniki częstotliwości](./img/blok_clk_div.png "img:dzieniki")
+
 Ze względu na różne czasy trwania generowanych w układzie należy wytworzyć sygnały zegarowe o różnej częstotliwości, przy czym należy pamiętać o zapewnieniu synchronizmu między nimi. Aby to osiągnąć należy wykorzystać elementy, które podzielą częstotliwość o odpowiednią wartość, co skutkuje wydłużeniem czasu trwania okresu zegara. 
 
 Proste dzielniki mogą być wykonane jako złożenie kilku przerzutników. W najtrywialnijszym przypadku dzielenia przez 2 implementacja takiego bloku funkcjonalnego składa się z jednego przerzutnika D oraz negatora wpiętego w pętlę sprzężenia zwrotnego do wejścia D.
@@ -228,7 +231,19 @@ Proste dzielniki mogą być wykonane jako złożenie kilku przerzutników. W naj
 ![Dzielnik przez 2](./img/blok_clk_div2.png "img:dzienik2")
 
 W bardziej złożonych przypadkach warto posłużyć się językiem VHDL, w którym można zaimplementować taki blok, którego współczynnik podziału będzie dowolnie definiowalnym parametrem.
-`fragment kodu vhdl (kilka linijek)`
+
+`process (clk_in) begin
+	if (clk_in'event and clk_in = '1') then
+		if cnt >= DIV_FACTOR then
+			div_temp <= not(div_temp);
+			cnt <= 0;
+		else	
+			div_temp <= div_temp;
+			cnt <= cnt + 1;
+		end if;
+		div_10 <= div_temp;
+	end if;
+	end process;`
 
 ## "Single TRX Generator"
 Na najwyższym stopniu hierarchii umieszczonych zostało 6 układów generujących pożądane sygnały do poszczególnych nadajników. Układy te reprezentuje makroblok o następującej strukturze:
@@ -279,6 +294,7 @@ Rozważano zastosowanie specyficznych dla układów z rodziny Xilinx Spartan3 ro
 Z punktu widzenia zacisków wejściowych i wyjściowych układ zachowuje się identycznie jak pamięć ROM.
 
 #### Generator tablicy prawdy
+
 Przenośność powyższego rozwiązania osiągnięta przez realizację w języku VHDL pociąga za sobą małą czytelność kodu (dla osoby nieznającej tej technologii) oraz `    `. Aby ułatwić edycję parametrów stworzono prosty program w języku Java, który umożliwia automatyczne wygnerowanie pliku VHDL opisującego daną tablicę prawdy.
 
 ![Program JAVA - generator VHDL](./img/java_program.png "img:generatorVHDL1")
@@ -297,10 +313,10 @@ Zapewnienie generacji impulsu przy każdym wystąpieniu jedynki logicznej wymaga
 
 W pierwszym podejściu połączono wyjście informacyjne z sygnałem zegarowym o odpowiedniej częstotliwości zwykłą bramką AND. Z punktu widzenia logiki boolowskiej oraz symulacji behawioralnych rozwiązanie to jest poprawne. W rzeczywistym układzie jednak powodowało to pewne problemy - na wyjściu bramki pojawiały się "szpilki" w trakcie opadającego zbocza zegarowego, które mogłyby wyzwolić generatory UWB.
 
-W związku z tym zastąpiono bramkę AND multiplekserem przystosowanym do przełączania sygnałów zegarowych (specyficznego dla układu Spartan3).
-`kształtowanie przez ciachanie`
-`rozwiązanie z bramką *and* - dlaczego złe i dlaczego teraz lepiej`
-`multiplekser do zastosowań zegarowych`
+W związku z tym zastąpiono bramkę AND multiplekserem przystosowanym do przełączania sygnałów zegarowych (specyficznego dla układu Spartan3). 
+
+`rysunek!!!!`
+
 
 ### Realizacja regulacji przesunięć
 
