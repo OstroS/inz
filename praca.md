@@ -32,11 +32,11 @@ Każdy z kolejnych nadajników otrzymuje sygnał zegara oraz sygnał wyzwalając
 
 `Dokładniejszy opis`
 
-`zdjęcie z safespota`
+![Schemat układu ](./img/kosinski.png "img:SchKosinski")
 
 ### Sygnały w łączu radiowym
 
-`schemat uproszczonego pakietu`
+![Uproszczony schemat sygnałów w łączu radiowym ](./img/kosinski_sygnaly.png "img:SygKosinski")
 
 
 # Programowalne układy cyfrowe FPGA
@@ -205,6 +205,8 @@ Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. U
 * `dzielniki częstotliwości` - bloki umożliwiające dostosowanie częstotliwości sygnału zegarowego do potrzeb różnych bloków funkcjonalnych
 
 ### Automat sterujący
+
+![Automat sterujący](./img/blok_main_automat.png "img:blokMainAutomat")
 Bloki generujące sygnały są sterowane przez automat zarządzający, który:
 
 * czeka na polecenie użytkownika do rozpoczęcia generacji,
@@ -214,13 +216,16 @@ Bloki generujące sygnały są sterowane przez automat zarządzający, który:
 * `umożliwia generację pojedynczą lub ciągłą`
 * `umożliwia sterowanie odstępem międzybitowym`
 
-`diagram stanów + wyjścia`
+![Automat sterujący](./img/diagram_abstract.png "img:abstractDiagram")
+![Automat sterujący](./img/diagram_closer.png "img:closerDiagram")
 
 ### Dzielniki częstotliwości
+![Dzielniki częstotliwości](./img/blok_clk_div.png "img:dzieniki")
 Ze względu na różne czasy trwania generowanych w układzie należy wytworzyć sygnały zegarowe o różnej częstotliwości, przy czym należy pamiętać o zapewnieniu synchronizmu między nimi. Aby to osiągnąć należy wykorzystać elementy, które podzielą częstotliwość o odpowiednią wartość, co skutkuje wydłużeniem czasu trwania okresu zegara. 
 
 Proste dzielniki mogą być wykonane jako złożenie kilku przerzutników. W najtrywialnijszym przypadku dzielenia przez 2 implementacja takiego bloku funkcjonalnego składa się z jednego przerzutnika D oraz negatora wpiętego w pętlę sprzężenia zwrotnego do wejścia D.
-`img:clkDiv2`
+
+![Dzielnik przez 2](./img/blok_clk_div2.png "img:dzienik2")
 
 W bardziej złożonych przypadkach warto posłużyć się językiem VHDL, w którym można zaimplementować taki blok, którego współczynnik podziału będzie dowolnie definiowalnym parametrem.
 `fragment kodu vhdl (kilka linijek)`
@@ -229,6 +234,8 @@ W bardziej złożonych przypadkach warto posłużyć się językiem VHDL, w któ
 Na najwyższym stopniu hierarchii umieszczonych zostało 6 układów generujących pożądane sygnały do poszczególnych nadajników. Układy te reprezentuje makroblok o następującej strukturze:
 
 `img:struktura makrobloku`
+
+![Blok automat](./img/blok_automat.png "img:blokAutomat")
 
 Sygnały wejściowe:
 * **clk** - główny sygnał zegarowy synchronizujący pracę układu (100 \[MHz\]),
@@ -253,7 +260,7 @@ Każdy z nich posiada bliźniaczą wewnętrzną strukturę, która składa się 
 ### Automat sterujący
 Pracą makrobloku steruje główny automat, który uruchamia sekwencjnie kolejne bloki zgodnie z diagramem stanów przedstawionym na rysunku `img:diagramStanow`.
 
-`img:diagramStanow`
+![Automat sterujący](./img/automat.png "img:diagramStanow")
 
 Automat, będąc w stanie początkowym, czeka na wyzwolenie sygnałem start, który pochodzi układów na wyższym poziomie hierarchii. Gdy sygnał ten pojawi się uruchomiona zostaje generacja preambuły.
 
@@ -262,18 +269,19 @@ Za proces ten odpowiada licznik `cnt_20`, który jest taktowany zegarem 50 \[MHz
 Po przepełnieniu licznika `cnt_20` wysyłany jest impuls potwierdzający do głównego automatu. Zmiana stanu rozpoczyna kolejny proces - generację sekwencji informacyjnej - poprzez uruchomienie licznika `cnt_72`, którego wyjście adresuje tablicę prawdy. Odpowiedź `układu pamięciowego` przechodzi przez multiplekser `kształtujący` oraz wyjściowy, którego stan główny automat ustawił na "1". Na wyjściu `out` pojawia się sekwencja bitów informacyjnych.
 
 ### ROM 
+
 Sekwencja informacyjna, przesyłana do każdego z nadajników, posiada unikalny charakter i musi być zapisana w konfiguracji układu. Należało zatem wprowadzić element, który przechowywałby dane oraz umożliwiał w łatwy sposób ich ewentualną zmianę.
 
 Rozważano zastosowanie specyficznych dla układów z rodziny Xilinx Spartan3 rozwiązań, które umożliwiają wygnerowanie w strukturze FPGA pamięci typu *Read Only Memory*. Jednakże, ze względu na małą uniwersalność takiej realizacji, zdecydowane o stworzeniu prosztszej i bardziej "przenośnej" implementacji. Zamiast pamięci ROM użyto klasycznego układu kombinacyjnego w postaci tablicy prawdy. Jej opis w języku VHDL nadaje uniwersalności i pozwala przeprowadzić syntezę dla dowolnych układów FPGA.
 
-`img:rom`
+![Blok ROM](./img/blok_rom.png "img:blokRom")
 
 Z punktu widzenia zacisków wejściowych i wyjściowych układ zachowuje się identycznie jak pamięć ROM.
 
 #### Generator tablicy prawdy
 Przenośność powyższego rozwiązania osiągnięta przez realizację w języku VHDL pociąga za sobą małą czytelność kodu (dla osoby nieznającej tej technologii) oraz `    `. Aby ułatwić edycję parametrów stworzono prosty program w języku Java, który umożliwia automatyczne wygnerowanie pliku VHDL opisującego daną tablicę prawdy.
 
-`img:screenshot`
+![Program JAVA - generator VHDL](./img/java_program.png "img:generatorVHDL1")
 
 Po uruchomieniu programu wystarczy uzupełnić pola:
 * `entity` - nazwa danego bloku,
@@ -281,6 +289,8 @@ Po uruchomieniu programu wystarczy uzupełnić pola:
 * nazwa pliku.
 
 Naciśnięcie przycisku `generuj` utworzy w katalogu programu plik opisujący tablicę prawdy z ustawionymi przez użytkownika parametrami.
+
+![Efekt pracy generatora](./img/java_plik_wygnerowany.png "img:generatorVHDL2")
 
 ### Multipleksery wyjściowe
 Zapewnienie generacji impulsu przy każdym wystąpieniu jedynki logicznej wymaga odpowiedniego zakodowania sygnału na wyjściu układu FPGA - każdej jedynce musi odpowiadać narastające zbocze. Zrealizowanie takiego kodowania jest możliwe na kilka sposobów.
