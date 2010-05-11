@@ -40,6 +40,50 @@ W łączu radiowym systemu nadawane były pakiety o strukturze przedstawionej na
 
 Preambuła umożliwia wysterowanie układu automatycznej regulacji wzmocnienia. Następnie przesyłana jest komenda STOP, która zatrzymuje pomiar czasu. Bity identyfikatora umożliwiają odbiornikowi rozpoznanie źródła przesyłanego sygnału. Pakiet kończy komenda uruchomiająca pomiar.
 
+# Systemy Cyfrowe
+
+## Klasyczne Systemy Cyfrowe
+
+* bramki, przerzutniki, rejestry
+* moduły TTL
+* każdy moduł - oddzielny blok
+* skomplikowany sposób projektowania i realizacji
+* nie sprawdza się w nowoczesnych, skomplikowanych systemach
+
+## Logika Programowalna
+
+* matryca połączeń
+* makrobloki
+* technologie
+* porównanie do poprzedniego
+** sposób implementacji
+** szybciej, taniej, pewniej
+
+## FPGA
+
+* technologie wytwarzania
+* bloki realizujące dowolną funkcję boolowską 4 wejść
+* zależności czasowe
+* nowoczesne układ FGPA i ASIC
+* sposób implementacji (etapy - synteza, routing etc)
+* testowanie
+** behawioralne
+** postroute
+
+### Spartan 3
+
+* kilka informacji z datasheetow
+* specyficzne, fajne zastosowania
+* ISE WEB PACK 
+* są także inni dostawcy
+
+## Język VHDL
+
+* rownolegle
+* mozliwosc modelowania na 3 rozne sposoby
+* mozliwosc stworzenia ukladu VLSI na podstawie opisu
+* verilog (jest :))
+--------------------------
 # Programowalne układy cyfrowe FPGA
 
 ## Geneza, możliwości, sposób implementacji 
