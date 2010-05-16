@@ -50,11 +50,11 @@ Koniec ubiegłego wieku przyniósł niesamowity rozwój systemów elektronicznyc
 Rozwój systemów pociągnął za sobą znaczne skomplikowanie układów cyfrowych, co spowodowało że dotychczasowe metody przestały być wystarczające. Długi czas projektowania i skomplikowane prototypowanie uniemożliwało szybkie tworzenie nowego sprzętu. W poszukiwaniu nowych mozliwości realizacji elektroniki cyfrowej wynaleziono układy programowalne.
 
 ## Logika Programowalna
-Pierwsze układy logiki programowalnej to tzw. układy PAL (**Programmable Array logic**). Ich wewnętrzna budowa składała się z matrycy bramek AND oraz matrycy bramek OR, gdzie matryca iloczynów była programowalna, natomiast matryca OR - połączona na stałe. 
+Pierwsze układy logiki programowalnej to tzw. układy PAL (*Programmable Array logic*). Ich wewnętrzna budowa składała się z matrycy bramek AND oraz matrycy bramek OR, gdzie matryca iloczynów była programowalna, natomiast matryca OR - połączona na stałe. 
 
 `przykład struktury - najlepiej z jakiegoś datasheeta`
 
-Dowolne kombinacje połączeń wewnątrz struktury umożliwiały realizację bardziej skomplikowanych funkcji w łatwiejszy sposób. Po raz pierwszy wykorzystano oprogramowanie komputerowe typu CAD (**Computer Aided Desiegn**), które wspomagało projektanta w trakcie tworzenia układu. Zmieniło się podejście do samego procesu projektowania.
+Dowolne kombinacje połączeń wewnątrz struktury umożliwiały realizację bardziej skomplikowanych funkcji w łatwiejszy sposób. Po raz pierwszy wykorzystano oprogramowanie komputerowe typu CAD (*Computer Aided Desiegn*), które wspomagało projektanta w trakcie tworzenia układu. Zmieniło się podejście do samego procesu projektowania.
 
 `schemat - strona 37`
 
@@ -63,23 +63,42 @@ Konstruktor nie musiał samemu realizować połączeń między bramkami, gdyż z
 Wykorzystanie układów logiki programowalnej miało wiele zalet. Przede wszystkim uwolniło projektanta od konieczności schodzenia do poziomu bramek logicznych, gdyż zajmowało się tym oprogramowanie. System wymagający wielu modułów TTL mógł składać się z jednego układu scalonego realizującego tę samą funkcję pracując szybciej. Ograniczono pobór energii oraz wymagane miejsce na płytce. 
 
 Względy ekonomiczne również przemawiały za układami PAL. Projekty mogły być realizowane i weryfikowane znacznie szybciej, co ograniczało koszty. Dzięki elastyczności tych modułów zmiany w działaniu systemu wymagały tylko zmiany "mapy przepaleń", natomiast sama płytka drukowana pozostawała bez zmian. Możliwe było stworzenie uniwersalnych płytek ewaluacyjnych umożliwiających łatwe prototypowanie układu. 
-* matryca połączeń
-* makrobloki
-* technologie
-* porównanie do poprzedniego
-** sposób implementacji
-** szybciej, taniej, pewniej
+
+## CPLD	
+Kolejnym krokiem w rozwoju programowalnych struktur logicznych było pojawienie się układów typu CPLD (*Complex Programmable Logic Device*). Ich struktura składa się z zestawu bloków logicznych wraz z częścią odpowiedzialną za połączenia wewnętrzne. Każdy z bloków składa się z:
+
+* matrycy elementów iloczynowych,
+* bloku sumy logicznej,
+* makrokomórek.
+
+`schematy, s59`
+
+Blok odpowiedzialny za połączenia programowalne może być realizowany na dwa sposoby:
+
+1. połączenia oparte na matrycy, gdzie wyjścia każdego z bloków łączone jest do matrycy poprzez element pamiętający (komórka EPROM); ponadto istnieje możliwość zrealizowania wszystkich połączeń, tj. dowolne wejście może być połączone z dowolnym blokiem logicznym.
+1. połączenia oparte na multiplekserze, gdzie każdemu wejściu bloku logicznego odpowiada jeden multiplekser, a linie adresujące są programowane tak, aby zapewnić odpowiednie połączenia.
+
+Bloki logiczne swoją strukturą przypominają układy typu PAL. Jego rozmiar, określony liczbą wejść i makrokomórek, definiuje możliwości. Bloki te  zawierają zwykle od 4 do 20 makrokomórek, przy czym wystarczy ich 16 aby realizować szesnastobitowe funkcje logiczne w jednym bloku.
+
+Makrokomórki składają się z przerzutników oraz układów sterowania polaryzacją, dzięki czemu można realizować zarówno funkcje proste jak i zanegowane. Dodatkowo układ CPLD często posiada makrokomórki we/wy, które stanowią bufor i zabezpieczenie w interfejsie I/O.
+
+Układy CPLD posiadają również inne, ciekawe własności. Oferują często konstruktorowi standard ISP (*In System Programmability*), który umożliwia programowania układu bezpośrednio w systemie bez konieczności umieszczania elementu w programatorze. Dodatkowo, nowsze układu implementują standard JTAG, który umożliwia debuggowanie i testowanie układu pracującego w systemie.
 
 ## FPGA
+**Field Programmable Gate Array** to układy, których architekturę wewnętrzną tworzy matryca komórek logicznych, które komunikują się między sobą poprzez linie poprowadzone w kanałach połączeniowych. Komórki logiczne najczęściej posiadają 4 wejścia i potrafią zrealizować dowolną funkcję logiczną czterech wejść. Wewnątrz składają się z:
 
-* technologie wytwarzania
-* bloki realizujące dowolną funkcję boolowską 4 wejść
-* zależności czasowe
-* nowoczesne układ FGPA i ASIC
-* sposób implementacji (etapy - synteza, routing etc)
-* testowanie
-** behawioralne
-** postroute
+* tablicy typu LUT (*Look Up Table*),
+* sumatora,
+* przerzutnika typu D.
+
+Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na jeszcze wyższym poziomie abstrakcji - tj. wyższym niż bramki logiczne i równania boolowskie. Wykorzystuje się w tym celu języki opisu sprzętu HDL (*Hardware Description Language*, np. *VHDL*, *Verilog*, *AHDL*), które umożliwiają stworzenie opisu behawioralnego. Do zaprogramowania konfiguracji FPGA należy wykorzystać środowisko dostarczone przez konkretnego dostawcę układu (np. Xilinx - ISE Web Pack, Altera - Quartus). Implementacja składa się z kilku etapów:
+
+1. Synteza - zamiana opisu w języku typu HDL do strukury bramek logicznych,
+1. Place&Route - proces polegający na dopasowaniu zsyntezowanego układu do komórek logicznych oraz realizacji odpowiednich połączeń.
+
+Środowski do projektowania umożliwia także bardzo dokładną symulację oraz testowanie.
+
+`więcej...`
 
 ### Spartan 3
 
@@ -94,18 +113,6 @@ Względy ekonomiczne również przemawiały za układami PAL. Projekty mogły by
 * mozliwosc modelowania na 3 rozne sposoby
 * mozliwosc stworzenia ukladu VLSI na podstawie opisu
 * verilog (jest :))
---------------------------
-# Programowalne układy cyfrowe FPGA
-
-## Geneza, możliwości, sposób implementacji 
-
-## VHDL 
-
-## Układy i środowisko firmy Xilinx 
-
-### Spartan3
-
-### ISE Web Pack
 
 # System sterowania nadajnikiem (częśc hardware\'owa)
 
