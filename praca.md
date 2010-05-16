@@ -91,28 +91,70 @@ Układy CPLD posiadają również inne, ciekawe własności. Oferują często ko
 * sumatora,
 * przerzutnika typu D.
 
-Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na jeszcze wyższym poziomie abstrakcji - tj. wyższym niż bramki logiczne i równania boolowskie. Wykorzystuje się w tym celu języki opisu sprzętu HDL (*Hardware Description Language*, np. *VHDL*, *Verilog*, *AHDL*), które umożliwiają stworzenie opisu behawioralnego. Do zaprogramowania konfiguracji FPGA należy wykorzystać środowisko dostarczone przez konkretnego dostawcę układu (np. Xilinx - ISE Web Pack, Altera - Quartus). Implementacja składa się z kilku etapów:
-
-1. Synteza - zamiana opisu w języku typu HDL do strukury bramek logicznych,
-1. Place&Route - proces polegający na dopasowaniu zsyntezowanego układu do komórek logicznych oraz realizacji odpowiednich połączeń.
-
-Środowski do projektowania umożliwia także bardzo dokładną symulację oraz testowanie.
+Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na jeszcze wyższym poziomie abstrakcji - tj. wyższym niż bramki logiczne i równania boolowskie. Wykorzystuje się w tym celu języki opisu sprzętu HDL (*Hardware Description Language*, np. *VHDL*, *Verilog*, *AHDL*), które umożliwiają stworzenie opisu behawioralnego. Do zaprogramowania konfiguracji FPGA należy wykorzystać środowisko dostarczone przez konkretnego dostawcę układu (np. Xilinx - ISE Web Pack, Altera - Quartus). 
 
 `więcej...`
 
 ### Spartan 3
 
-* kilka informacji z datasheetow
-* specyficzne, fajne zastosowania
-* ISE WEB PACK 
-* są także inni dostawcy
+* `kilka informacji z datasheetow`
+* `specyficzne, fajne zastosowania`
+* `ISE WEB PACK `
+* `są także inni dostawcy`
 
 ## Język VHDL
+Tworzenie skomplikowanych systemów cyfrowych wymaga wykorzytania odpowiednich narzędzi. Opis układu w postaci równań boolowskich jest trudny zarówno dla projektanta jak i osoby, która później może system rozwijać. Języki opisu sprzętu umożliwiają stworzenie opisu działania układu na różnych poziomach abstrakcji, dzięki czemu są bardziej elastyczne i pozwalają szybciej tworzyć skomplikowane struktury. Jednym z dwóch czołowych języków tego typu, obok języka Verilog, jest VHDL (*VHSIC Hardware Description Language*, *VHSIC - Very-High-Speed Integrated Circuit*), który został wykorzystany do realizacji projektu w ramach pracy dyplomowej.
 
-* rownolegle
-* mozliwosc modelowania na 3 rozne sposoby
-* mozliwosc stworzenia ukladu VLSI na podstawie opisu
-* verilog (jest :))
+Język ten zawiera użyteczne konstrukcje semantyczne, umożliwiające tworzenie jasnego i czytelnego kodu reprezentującego układ logiczny. Projekt może być opisany na wielu poziomach abstrakcji, dzięki czemu programista ma dużą swobodę i elastyczność w tworzeniu konfiguracji FPGA. Język umożliwia kreowanie i ładowanie zewnętrznych bibliotek, a także realizację modułów, które mogą być wielokrotnie wykorzystywane w projekcie (struktura hierarchiczna). Większość instrukcji wykonywana jest równolegle, jednakże istnieją sposoby na stworzenie kodu wykonywanego sekwencyjnie (tzw. procedury) wraz z instrukcjami warunkowymi i pętlami znanymi z klasycznych języków programowania.
+
+Dużą zaletą tej technologii jest uniezależnienie opisu układu od wyboru konkretnego układu, w jakim będzie on później realizowany. Dzięki przenośności istnieje możliwość symulowania i testowania projektu w wielu środowiskach, co ułatwia znalezienie potencjalnych błędów. Układ można poddać syntezie także w dowolnym środowisku do projektowania FPGA.
+
+Niestety, możliwość tworzenia projektu na wysokim poziomie abstrakcji niesie za sobą pewne konsekwencja. Narzędzia do syntezy czasem tworzą nieoptymalną implementację. Jest to często winą samego projektanta, który tworzy kod niezgodny z przyjętymi konwecjami. Co więcej, niedoświadczony programista może napisać kod, który w ogóle nie jest syntezowalny. Z drugiej strony - sama idea tworzenia układu cyfrowego na podstawie opisu w języku HDL powoduje przyjęcie pewnych standardów przez kompilator i generowanie nieoptymalnych rozwiązań w przypadku niecodziennych konstrukcji.
+
+## Implementacja 
+Implementacja składa się z kilku etapów:
+
+1. Zdefiniowanie założeń i wymagań projektowych,
+1. Opisanie projektu w języku typu *HDL*,
+1. Symulacja kodu źródłowego,
+1. Synteza, optymalizacja i dopasowanie projektu,
+1. Symulacja modelu dopasowanego i zrealzowanego projektu,
+1. Zaprogramowanie układu.
+
+### Zdefiniowanie założeń i wymagań projektowych
+Każdy projekt techniczny musi zacząć się od zdefuniowania konkretnych założeń. Nie inaczej jest w trakcie projektowania systemów cyfrowych. Należy zdefiniować wymagania, szczególnie dotyczące:
+
+* częstotliwości działania układu,
+* czasów ustawiania i propagacji sygnałów,
+* ścieżek krytycznych.
+
+Jasne sprecyzowanie wymagań ułatwia dobór narzędzi oraz konkretnych układów, w których projekt zostanie zaimplementowany.
+
+### Opisanie projektu w języku typu *HDL*
+Zalecane są 3 metody projektowania:
+
+* zstępująca (top-down),
+* wstępująca (bottom-up),
+* pozioma.
+
+W omawianym projekcie została wykorzystana pierwsza z nich. Polega na podzieleniu projektu na funkcje składowe, mające określone, specyficzne wejścia i wyjścia oraz realizujące odpowienie funkcje. Moduł na najwyższym stopniu hierarchii spaja wszystkie elementy i umożliwia łatwą analizę działania układu. Takie podejście jest szczególnie korzystne przy tworzeniu skomplikowanych systemów. Oprogramowanie do projektowania układów FPGA umożliwia realizację wielopoziomowych struktur.
+
+Po stworzeniu bloków składowych projektu należy przejść do zakodowania funkcjonalności każdego z nich. 
+
+### Symulacja kodu źródłowego
+Środowiska do projektowania umożliwiają przeniesienie fazy symulacji i testowania do wczesnych etapów tworzenia systemu. Jest to tzw. "symulacja behawioralna", która obrazuje zachowanie układu opisanego językiem HDL bez uwzględnienia wpływu syntezy oraz routowania. Można zaobserwować podstawowe zachowanie zrealizowanego projektu, jednakże bez tak kluczowych czynników, jak np. opóźnienia i czasy propagacji.
+
+### Synteza, optymalizacja i dopasowanie projektu
+#### Synteza 
+Synteza to proces, w wyniku którego z abstrakcyjnego kodu HDL tworzona jest lista połączeń między blokami realizującymi odpowiednie funkcje logiczne lub zbiór równań boolowski. Rezultat tej operacji jest zależny od konkretnej technologii, gdyż powinien być dopasowany do konkretnego modelu układu FPGA, w którym projekt będzie implementowany. 
+
+#### Optymalizacja
+#### Dopasowanie
+#### Rozmieszczenie i poprowadzenie połączeń
+
+### Symulacja modelu dopasowanego i zrealzowanego projektu
+
+### Zaprogramowanie układu
 
 # System sterowania nadajnikiem (częśc hardware\'owa)
 
