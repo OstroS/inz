@@ -178,7 +178,7 @@ Jednym z możliwych rozwiązań jest wprowadzenie centralnego układu sterujące
 
 W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odpowiednią konfiguracją oraz układami wejścia-wyjścia, które zostaną przedstawione w kolejnych rozdziałach. 
 
-## Architektura systemu
+## 4.2. Architektura systemu
 Modyfikacja systemu wymagała opracowania nowej architektury, która wyeliminuje problemy powstałe w poprzedniej realizacji. Zdecydowano o zmianie połączenia pierścieniowego nadajników na rzecz połączenia w gwiazdę wraz z centralnym układem sterującym.
 
 Takie połącznie posiada zdecydowanie więcej zalet, kosztem niewielkiej komplikacji układu. Do każdego z nadajników można wysyłać niezależnie i sekwencyjnie (bądź równolegle) sygnały, których parametry ustawia się w sterowniku. Każdy z modułów radiowych otrzymuje sygnał zegarowy bezpośrednio ze sterownika, dzięki czemu system jest niezależny od jitteru wprowadzanego przez każde z urządzeń (jitter nie kumuluje się, tak jak w poprzedniej wersji).
@@ -188,12 +188,12 @@ Takie połącznie posiada zdecydowanie więcej zalet, kosztem niewielkiej kompli
 
 Poglądową architekturę systemu zaprezentowano na rysunku `img:archSystemu`. Układ FPGA pełni główną funkcję sterującą. Operator systemu `może ustawiać parametry` oraz wyzwolić działanie systemu. Sterownik generuje odpowiednie sygnały `(zgodnie z ustawieniami)` wysyłając je na wyjścia, po czym następuje konwersja standardu przesyłania danych do potrzeb linii transmisyjnych oraz odbiorników. Z konwertera sygnały przesyłane są kablami w standardzie Cat 5e (skrętka - 4 pary symetryczne) do rozdzielaczy, gdzie są przekazywane do odpowiednich nadajników.
 
-## Moduł FPGA
+## 4.3. Moduł FPGA
 `zdjęcie płytki FPGA`
 `schemat`
 `krótki opis`
 
-## Moduł konwertera CMOS - LVDS
+## 4.4. Moduł konwertera CMOS - LVDS
 Układ FPGA Spartan3 firmy Xilinx posiada wyjścia w różnych standardach. Najbardziej uniwersalnym jest CMOS, w którym:
 
 * stan wysoki => 3,3V b
@@ -226,9 +226,9 @@ Uruchamianie układu konwertera przebiegło `z problemami/bez większych problem
 
 `dalej...`
 
-## Struktura generowanych sygnałów ##
+## 4.5. Struktura generowanych sygnałów ##
 
-### Struktura pakietu ###
+### 4.5.1. Struktura pakietu ###
 System lokalizacyjny, do realizacji swoich funkcji, wykorzystuje sekwencje sygnałów przesyłanych w łączu radiowym. Nadajniki przesyłają zestandaryzowane sekwencje bitów, których każde pole składowe reprezentuje wykonanie odpowiednich procedur w odbiorniku. Po detekcji przesyłanej sekwencji odbiornik realizuje funkcję określoną przez ciąg bitów. Struktura logiczna przesyłanych danych została zaprezentowana na rysunku `img:SchPak1`.
 
 ![Struktura pakietu](./img/pakiet.png "img:SchPak1")
@@ -254,7 +254,7 @@ Krótkiego wyjaśnienia wymaga kolejność transmitowanych pakietów - najpierw 
 
 `szczegółowy opis - rozdział o TDOA`
 
-### Parametry czasowe ###
+### 4.5.2. Parametry czasowe ###
 
 System transmisyjny oraz charakterystyka kanału radiowego narzucają określone wymagania co do parametrów parametrów czasowych przesyłanych sekwencji.
 
@@ -266,7 +266,7 @@ W związku z powyższym faktem na etapie projektowania sygnałów transmitowanyc
 
 Z określonego odstępu międzybitowego wynika wprost częstotliwość z jaką należy generować impulsy. Zawiera się ona w przedziale od 3.33  do 5 MHz. Powyższym rozważaniom nie podlega jednak sygnał preambuły, w którym okres powtarzania impulsów wynosi *20 \[ns\]*, wobec czego częstotliwość taktowania układów generowania preambuły wynosi 50 \[MHz\].
 
-### Modulacja ###
+### 4.5.3. Modulacja ###
 
 Do przesyłania danych w łączu radiowych często wykorzystuje się modulację *OOK* (OOK - On-Off Keying), której ideę prezentują rysunki `img:OOK1` oraz `img:OOK2`
 
@@ -279,26 +279,31 @@ Logicznej jedynce odpowiada wysłanie nośnej (lub, tak jak w omawianym przypadk
 W omawianym systemie zastosowano zmodyfikowaną wersję tej modulacji. W łączu radiowym transmitowane są sygnału UWB, w związku z czym logicznej jedynce odpowiada generacja impulsu; natomiast logiczne zero to brak nadawania. Zastosowane generatory UWB są wyzwalane narastającym zboczem sygnału wejściowego. W związku z tym, należy im dostarczyć przebieg wejściowy, który zmieni swój stan z 0 na 1 w momencie pożądanej generacji. Ma to istotne znaczenie z punktu widzenia kształtowania sygnałów w układzie FPGA.
 
 # 5. Konfiguracja FPGA 
-## Wprowadzenie
+## 5.1. Wprowadzenie
 Opisane w rozdziale `Programowalne układy cyfrowe` struktury FPGA są bardzo wygodnym narzędziem do budowania elektronicznych systemów cyfrowych. Dzięki możliwości zaimplementowania wielu klasycznych elementów (liczniki, rejestry, automaty stanów) i szerokiej ich rozbudowy można zaprojektować nawet bardzo złożone układy. Podział na struktury hierarchiczne ułatwia zarówno budowanie układu jak i jego późniejszą analizę.
 
-## Interfejs zewnętrzny i opcje konfiguracyjne
+## 5.2. Interfejs zewnętrzny i opcje konfiguracyjne
 `opisanie sterowania układem, brak implementacji póki co`
 `jakie stany (elektryczne i logiczne) co wyzwalają`
 `poziomy napięć?`
-* `clk_in` - wejście sygnału zegarowego wraz z buforem zapewniającym optymalną propagację sygnału w układzie
-* `start` - sygnał, którym użytkownik może uruchomić układ
-* `rst` - sygnał resetu asynchronicznego
-* `przesuniecia`
-* `wyjścia` - sześć wyjść wygenerowanych sygnałów 
 
-## Top module
+Sygnały wejściowe | Opis |
+-----------------|------|
+`clk_in` |  wejście sygnału zegarowego wraz z buforem zapewniającym optymalną propagację sygnału w układzie |
+`start` | uruchomienie układu |
+`rst` | reset asynchroniczny |
+
+Sygnały wyjściowe | Opis |
+------------------|------|
+`wyjścia` | sześć wyjść wygenerowanych sygnałów 
+
+## 5.3. Top module
 Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. W układzie zdefiniowano wszystkie wymienione wcześniej wejścia, wyjscia oraz połączenia między poszczególnymi blokami składowymi. Na rysunku `img:topModule` możemy wyróżnić
 * `automat` - który steruje działaniem pozostałych bloków,
 * `trx1..6` - zestaw bloków generujących sygnały sterujące poszczególnymi nadajnikami,k
 * `dzielniki częstotliwości` - bloki umożliwiające dostosowanie częstotliwości sygnału zegarowego do potrzeb różnych bloków funkcjonalnych
 
-### Automat sterujący
+### 5.3.1. Automat sterujący
 
 ![Automat sterujący](./img/blok_main_automat.png "img:blokMainAutomat")
 
@@ -317,7 +322,7 @@ Bloki generujące sygnały są sterowane przez automat zarządzający, który:
 
 Na pierwszym z powyższych rysunków zaprezentowano diagram stanów automatu sterującego, gdzie każdy proces generacji opisano pojedynczym stanem. Drugi z rysunków pokazuje fragment pierwszego z uwzględnieniem konkretnych stanów rzeczywistego automatu. Jest to automat typu Mealy'ego, gdyż wyjścia układu zależne są nie tylko od aktualnego stanu, ale także od wartości logicznej sygnałów wejściowych. 
 
-### Dzielniki częstotliwości
+### 5.3.2. Dzielniki częstotliwości
 
 ![Dzielniki częstotliwości](./img/blok_clk_div.png "img:dzieniki")
 
@@ -342,24 +347,28 @@ W bardziej złożonych przypadkach warto posłużyć się językiem VHDL, w któ
 	end if;
 	end process;`
 
-## "Single TRX Generator"
+## 5.4. "Single TRX Generator"
 Na najwyższym stopniu hierarchii umieszczonych zostało 6 układów generujących pożądane sygnały do poszczególnych nadajników. Układy te reprezentuje makroblok o następującej strukturze:
 
 `img:struktura makrobloku`
 
 ![Blok automat](./img/blok_automat.png "img:blokAutomat")
 
-Sygnały wejściowe:
-* **clk** - główny sygnał zegarowy synchronizujący pracę układu (100 \[MHz\]),
-* **clk preamb** - sygnał zegarowy taktujący generowanie preambuły (`ile?`),
-* **clk data** - sygnał zegarowy taktujący generowanie bitów informacyjnych  (`ile?`),
-* **start** - wyzwolenie generacji sekwencji bitów,
-* **rst** - reset asynchroniczny.
 
-Sygnały wyjściowe
-* `out` - główne wyjście generowanej sekwencji,
-* `finish_preamb` - sygnał informujący o zakończeniu generacji preambuły,
-* `finish` - sygnał informujący o zakończeniu generacji całej sekwencji.
+Sygnały wejściowe | Opis |
+-----------------|------|
+clk              | główny sygnał zegarowy synchronizujący pracę układu (100 \[MHz\]) |
+clk preamb       | sygnał zegarowy taktujący generowanie preambuły (`ile?`) |
+clk data         | sygnał zegarowy taktujący generowanie bitów informacyjnych  (`ile?`) |
+start            | wyzwolenie generacji sekwencji bitów |
+rst              | reset asynchroniczny |
+
+
+Sygnały wyjściowe | Opis |
+-----------------|------|
+`out`            | główne wyjście generowanej sekwencji |
+`finish_preamb`  | sygnał informujący o zakończeniu generacji preambuły |
+`finish`         | sygnał informujący o zakończeniu generacji całej sekwencji |
 
 Każdy z nich posiada bliźniaczą wewnętrzną strukturę, która składa się z:
 
@@ -369,7 +378,7 @@ Każdy z nich posiada bliźniaczą wewnętrzną strukturę, która składa się 
 * układu kombinacyjnego,
 * multiplekserów wyjściowych.
 
-### Automat sterujący
+### 5.4.1. Automat sterujący
 Pracą makrobloku steruje główny automat, który uruchamia sekwencjnie kolejne bloki zgodnie z diagramem stanów przedstawionym na rysunku `img:diagramStanow`.
 
 ![Automat sterujący](./img/automat.png "img:diagramStanow")
@@ -380,7 +389,7 @@ Za proces ten odpowiada licznik `cnt_20`, który jest taktowany zegarem 50 \[MHz
 
 Po przepełnieniu licznika `cnt_20` wysyłany jest impuls potwierdzający do głównego automatu. Zmiana stanu rozpoczyna kolejny proces - generację sekwencji informacyjnej - poprzez uruchomienie licznika `cnt_72`, którego wyjście adresuje tablicę prawdy. Odpowiedź `układu pamięciowego` przechodzi przez multiplekser `kształtujący` oraz wyjściowy, którego stan główny automat ustawił na "1". Na wyjściu `out` pojawia się sekwencja bitów informacyjnych.
 
-### ROM 
+### 5.4.2. ROM 
 
 Sekwencja informacyjna, przesyłana do każdego z nadajników, posiada unikalny charakter i musi być zapisana w konfiguracji układu. Należało zatem wprowadzić element, który przechowywałby dane oraz umożliwiał w łatwy sposób ich ewentualną zmianę.
 
@@ -405,7 +414,7 @@ Naciśnięcie przycisku `generuj` utworzy w katalogu programu plik opisujący ta
 
 ![Efekt pracy generatora](./img/java_plik_wygnerowany.png "img:generatorVHDL2")
 
-### Multipleksery wyjściowe
+### 5.4.3. Multipleksery wyjściowe
 Zapewnienie generacji impulsu przy każdym wystąpieniu jedynki logicznej wymaga odpowiedniego zakodowania sygnału na wyjściu układu FPGA - każdej jedynce musi odpowiadać narastające zbocze. Zrealizowanie takiego kodowania jest możliwe na kilka sposobów.
 
 W pierwszym podejściu połączono wyjście informacyjne z sygnałem zegarowym o odpowiedniej częstotliwości zwykłą bramką AND. Z punktu widzenia logiki boolowskiej oraz symulacji behawioralnych rozwiązanie to jest poprawne. W rzeczywistym układzie jednak powodowało to pewne problemy - na wyjściu bramki pojawiały się "szpilki" w trakcie opadającego zbocza zegarowego, które mogłyby wyzwolić generatory UWB.
