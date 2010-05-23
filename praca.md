@@ -43,7 +43,7 @@ Preambuła umożliwia wysterowanie układu automatycznej regulacji wzmocnienia. 
 ## Klasyczne Systemy Cyfrowe
 Koniec ubiegłego wieku przyniósł niesamowity rozwój systemów elektronicznych. Odstąpiono od elektroniki analogowej i zaczęto projektować oraz produkować na masową skalę układy cyfrowe. W fazie projektowania wykorzystywano mechanizmy oparte na algebrze Boola - tworzono opis układu w postaci tablicy prawdy, którą przy pomocy różnorodnych technik optymalizacyjnych (tablice Karnough'a, dekompozycja) sprowadzano do postaci równania boolowskiego. Następnie tworzono realizację równań przy pomocy bramek logicznych, przerzutników, liczników, rejestrów, układów arytmetycznych itd. Fizyczną postać tworzono najczęściej przy pomocy układów scalonych firmy Texas Instruments z serii TTL 74xx, które dostarczały gotowe implementacje większości podstawowych struktur logicznych. W trakcie budowania systemu w rolą konstruktora było odpowiednie poprowadzenie ścieżek między wejściami i wyjściami układów.
 
-`wstawic wykres ze strony 29 JEZYKA VHDL`
+![Fazy projektowania (źródło bibl:VHDL ](./img/fazy_projektowania.png "img:Rys3.1")
 
 Rozwój systemów pociągnął za sobą znaczne skomplikowanie układów cyfrowych, co spowodowało że dotychczasowe metody przestały być wystarczające. Długi czas projektowania i skomplikowane prototypowanie uniemożliwało szybkie tworzenie nowego sprzętu. W poszukiwaniu nowych mozliwości realizacji elektroniki cyfrowej wynaleziono układy programowalne.
 
@@ -54,7 +54,7 @@ Pierwsze układy logiki programowalnej to tzw. układy PAL (*Programmable Array 
 
 Dowolne kombinacje połączeń wewnątrz struktury umożliwiały realizację bardziej skomplikowanych funkcji w łatwiejszy sposób. Po raz pierwszy wykorzystano oprogramowanie komputerowe typu CAD (*Computer Aided Desiegn*), które wspomagało projektanta w trakcie tworzenia układu. Zmieniło się podejście do samego procesu projektowania.
 
-`schemat - strona 37`
+![Fazy projektowania (źródło bibl:VHDL) ](./img/fazy_projektowania_cpld.png "img:Rys3.2")
 
 Konstruktor nie musiał samemu realizować połączeń między bramkami, gdyż zajmowało się tym oprogramowanie, które dostarczało gotową "mapę przepaleń" połączeń wewnętrzych układu PAL.
 
@@ -83,11 +83,16 @@ Makrokomórki składają się z przerzutników oraz układów sterowania polaryz
 Układy CPLD posiadają również inne, ciekawe własności. Oferują często konstruktorowi standard ISP (*In System Programmability*), który umożliwia programowania układu bezpośrednio w systemie bez konieczności umieszczania elementu w programatorze. Dodatkowo, nowsze układu implementują standard JTAG, który umożliwia debuggowanie i testowanie układu pracującego w systemie.
 
 ## FPGA
+
+![Matryca FPGA (źródło bibl:VHDL) ](./img/fpga.png "img:Rys3.3")
+
 **Field Programmable Gate Array** to układy, których architekturę wewnętrzną tworzy matryca komórek logicznych, które komunikują się między sobą poprzez linie poprowadzone w kanałach połączeniowych. Komórki logiczne najczęściej posiadają 4 wejścia i potrafią zrealizować dowolną funkcję logiczną czterech wejść. Wewnątrz składają się z:
 
 * tablicy typu LUT (*Look Up Table*),
 * sumatora,
 * przerzutnika typu D.
+
+![Pojedyncza komórka logiczna (źródło bibl:VHDL) ](./img/fpga_LB.png "img:Rys3.4")
 
 Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na jeszcze wyższym poziomie abstrakcji - tj. wyższym niż bramki logiczne i równania boolowskie. Wykorzystuje się w tym celu języki opisu sprzętu HDL (*Hardware Description Language*, np. *VHDL*, *Verilog*, *AHDL*), które umożliwiają stworzenie opisu behawioralnego. Do zaprogramowania konfiguracji FPGA należy wykorzystać środowisko dostarczone przez konkretnego dostawcę układu (np. Xilinx - ISE Web Pack, Altera - Quartus). 
 
