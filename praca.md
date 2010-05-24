@@ -149,15 +149,25 @@ Po stworzeniu bloków składowych projektu należy przejść do zakodowania funk
 
 ### Synteza, optymalizacja i dopasowanie projektu
 #### Synteza 
-Synteza to proces, w wyniku którego z abstrakcyjnego kodu HDL tworzona jest lista połączeń między blokami realizującymi odpowiednie funkcje logiczne lub zbiór równań boolowski. Rezultat tej operacji jest zależny od konkretnej technologii, gdyż powinien być dopasowany do konkretnego modelu układu FPGA, w którym projekt będzie implementowany. 
+Synteza to proces, w wyniku którego z abstrakcyjnego kodu HDL tworzona jest lista połączeń między blokami realizującymi odpowiednie funkcje logiczne lub zbiór równań boolowskich. Rezultat tej operacji jest zależny od konkretnej technologii, gdyż powinien być dopasowany do konkretnego modelu układu FPGA, w którym projekt będzie implementowany. 
 
 #### Optymalizacja
-#### Dopasowanie
+Proces optymalizacji jest zależny od trzech czynników:
+
+* postaci wyrażeń boolowskich,
+* rodzaju dostępnych zasobów sprzętowych,
+* ograniczeń projektowych (**ang. constraints**).
+
+Narzędzia do optymalizacji umożlwiają wykorzystanie specyficznych właściowści układu konkretnego producenta w celu zapewnienia najlepszych parametrów wynikowego projektu. Aby tego dokonać mogą korzystać z przekształceń równań boolowskich otrzymanych w wyniku syntezy, aby dokonać optymalnej realizacji. Ograniczenia projektowe narzucone przez użytkownika lub wprowadzone automatycznie umożliwiają efektywniejszą optymalizację pod kątem wykorzystania dostępnych zasobów.
+
 #### Rozmieszczenie i poprowadzenie połączeń
+Proces ten ma ogromny wpływ na jakość zrealizowanego układu. Bardzo istotnym parametrem jest czas propagacji sygnałów, na który kluczowy wpływ ma sposób poprowadzenia połączeń, gdyż to one właśnie wprowadzają największe opóźnienia. Programy najwyższej klasy umożliwiają wykorzystanie bloków logicznych leżących blisko siebie, dzięki czemu ścieżki połączeniowe są bardzo krótkie - w szczególności te, których opóźnienie wpływa w krytyczny sposób na parametry układu. 
 
 ### Symulacja modelu dopasowanego i zrealzowanego projektu
+Dokonanie symulacji bez syntezy układu umożliwia dokonanie wstępnej obserwacji sygnałów. Jednakże dopiero przesymulowania układu po syntezie i rozmieszczeniu w strukturze FPGA oddaje pełny obraz zachowania rzeczywistego projektu. Dzięki niej możemy przeprowadzić nie tylko analizę funkcjonalną, lecz także sprawdzić parametry czasowe, opóźnienia propagacji sygnałów zegarowych i międzyrejestrowych. 
 
 ### Zaprogramowanie układu
+Finalny etapem realizacji projektu jest zaprogramowanie układu. Dokonuje się go przy pomocy zewnętrznego urządzanie jakim jest programator wykorzystujący najczęściej standard JTAG.
 
 # 4. System sterowania nadajnikami
 ## 4.1. Założenia
@@ -221,7 +231,7 @@ Możliwości te sprawiają, że układu MAX9157 są bardzo dobrymi elementami do
 
 ![Schemat zasilania](./img/zasilanie.png "img:zasilanie")
 
-Ze względu na dużą liczbę peryferiów umieszczonych na płytce z FPGA omawiany konwerter nie może być przez nią zasilony. Zdecydowano, że zasilanie konwertera zostanie zrealizowane od strony nadajników, co zaprezentowano na rysunku `img:zasilanie`. Do wolnej pary (do transmisji danych wykorzystano tylko 3 z 4 par) podłączone zostanie napięcie zasilania oraz masa. Potencjały te są podłączone z obu rozdzielaczy jednocześnie i są połączone poprzez diody oraz filtry złożone z kondensatora i dławika, którego celem jest odfiltrowanie wszelkich zakłóceń oraz separacja potencjałów analogowych i cyfrowych (aVcc, aGnd, Vcc, cGnd).
+Ze względu na duży pobór prądu przez nadajniki cały system nie może zostać zasilony przez płytkę z modułem FPGA. Zdecydowano o zastosowaniu dodatkowego zasilacza, który dostarczy odpowiedniej mocy do konwertera oraz nadajników (co zostało zobrazowane na rysunku `img:zasilanie`). Do wolnej pary (do transmisji danych wykorzystano tylko 3 z 4 par) podłączone zostanie napięcie zasilania oraz masa. Potencjały te są podłączone z obu rozdzielaczy jednocześnie i są połączone poprzez diody oraz filtry złożone z kondensatora i dławika, którego celem jest odfiltrowanie wszelkich zakłóceń oraz separacja potencjałów analogowych i cyfrowych (aVcc, aGnd, Vcc, cGnd).
 
 `img:pcbLayout`
 
@@ -229,9 +239,8 @@ Zaprezentowany na rysunku `img:pcbLayout` layout płytki został stworzony w pro
 
 `img:pcbPhoto`
 
-Uruchamianie układu konwertera przebiegło `z problemami/bez większych problemów`. Pierwszym krokiem było sprawdzenie doprowadzeń zasilania poprzez podłączenie napięcia stałego do ścieżek rozprowadzających je po układzie. Napięcie na wyjściu stabilizatora wyniosło 3.3V.
+Uruchamianie układu konwertera przebiegło bez większych problemów. Pierwszym krokiem było sprawdzenie doprowadzeń zasilania poprzez podłączenie napięcia stałego do ścieżek rozprowadzających je po układzie. Napięcie na wyjściu stabilizatora wyniosło 3.3V. Następnie podłączono konwerter do modułu z FPGA oraz rozdzielacze do wyjścia. Na oscyloskopie zaobserwowano przebiegi sygnałów różnicowych, jednakże ze względu na rozwarcie na końcu linii były one zniekształcone. Dopiero podłączenie dopasowanych generatorów umożliwiło obserwację poprawnych sygnałów.
 
-`dalej...`
 
 ## 4.5. Struktura generowanych sygnałów ##
 
