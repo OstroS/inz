@@ -41,18 +41,18 @@ Preambuła umożliwia wysterowanie układu automatycznej regulacji wzmocnienia. 
 # 3. Systemy Cyfrowe
 
 ## Klasyczne Systemy Cyfrowe
-Koniec ubiegłego wieku przyniósł niesamowity rozwój systemów elektronicznych. Odstąpiono od elektroniki analogowej i zaczęto projektować oraz produkować na masową skalę układy cyfrowe. W fazie projektowania wykorzystywano mechanizmy oparte na algebrze Boola - tworzono opis układu w postaci tablicy prawdy, którą przy pomocy różnorodnych technik optymalizacyjnych (tablice Karnough'a, dekompozycja) sprowadzano do postaci równania boolowskiego. Następnie tworzono realizację równań przy pomocy bramek logicznych, przerzutników, liczników, rejestrów, układów arytmetycznych itd. Fizyczną postać tworzono najczęściej przy pomocy układów scalonych firmy Texas Instruments z serii TTL 74xx, które dostarczały gotowe implementacje większości podstawowych struktur logicznych. W trakcie budowania systemu w rolą konstruktora było odpowiednie poprowadzenie ścieżek między wejściami i wyjściami układów.
+Koniec ubiegłego wieku przyniósł niesamowity rozwój systemów elektronicznych. Odstąpiono od elektroniki analogowej i zaczęto projektować oraz produkować na masową skalę układy cyfrowe. W fazie projektowania wykorzystywano mechanizmy oparte na algebrze Boola - tworzono opis układu w postaci tablicy prawdy, którą za pomocą różnorodnych technik optymalizacyjnych (tablice Karnough'a, dekompozycja) sprowadzano do postaci równania boolowskiego. Następnie tworzono realizację równań przy pomocy bramek logicznych, przerzutników, liczników, rejestrów, układów arytmetycznych itd. Fizyczną postać tworzono najczęściej wykorzystując układów scalonych firmy Texas Instruments z serii TTL 74xx, które dostarczały gotowe implementacje większości podstawowych struktur logicznych. W trakcie budowania systemu w rolą konstruktora było odpowiednie poprowadzenie ścieżek między wejściami i wyjściami układów.
 
 ![Fazy projektowania (źródło bibl:VHDL ](./img/fazy_projektowania.png "img:Rys3.1")
 
-Rozwój systemów pociągnął za sobą znaczne skomplikowanie układów cyfrowych, co spowodowało że dotychczasowe metody przestały być wystarczające. Długi czas projektowania i skomplikowane prototypowanie uniemożliwało szybkie tworzenie nowego sprzętu. W poszukiwaniu nowych mozliwości realizacji elektroniki cyfrowej wynaleziono układy programowalne.
+Rozwój systemów pociągnął za sobą znaczne skomplikowanie układów cyfrowych, co spowodowało że dotychczasowe metody przestały być wystarczające. Długi czas projektowania i złożone prototypowanie uniemożliwało szybkie tworzenie nowego sprzętu. W poszukiwaniu nowych możliwości realizacji elektroniki cyfrowej wynaleziono układy programowalne.
 
-## Logika Programowalna
-Pierwsze układy logiki programowalnej to tzw. układy PAL (*Programmable Array logic*). Ich wewnętrzna budowa składała się z matrycy bramek AND oraz matrycy bramek OR, gdzie matryca iloczynów była programowalna, natomiast matryca OR - połączona na stałe. 
+## Układy logiki programowalnej
+Pierwsze układy logiki programowalnej to tzw. układy PAL (*Programmable Array Logic*). Ich wewnętrzna budowa składała się z matrycy bramek AND oraz matrycy bramek OR, gdzie matryca iloczynów była programowalna, natomiast matryca OR - połączona na stałe. 
 
 `przykład struktury - najlepiej z jakiegoś datasheeta`
 
-Dowolne kombinacje połączeń wewnątrz struktury umożliwiały realizację bardziej skomplikowanych funkcji w łatwiejszy sposób. Po raz pierwszy wykorzystano oprogramowanie komputerowe typu CAD (*Computer Aided Desiegn*), które wspomagało projektanta w trakcie tworzenia układu. Zmieniło się podejście do samego procesu projektowania.
+Dowolne kombinacje połączeń wewnątrz struktury umożliwiały realizację bardziej skomplikowanych funkcji w łatwiejszy sposób. Po raz pierwszy wykorzystano oprogramowanie komputerowe typu CAD (*Computer Aided Design*), które wspomagało projektanta w trakcie tworzenia układu. Zmieniło się podejście do samego procesu projektowania.
 
 ![Fazy projektowania (źródło bibl:VHDL) ](./img/fazy_projektowania_cpld.png "img:Rys3.2")
 
@@ -62,7 +62,7 @@ Wykorzystanie układów logiki programowalnej miało wiele zalet. Przede wszystk
 
 Względy ekonomiczne również przemawiały za układami PAL. Projekty mogły być realizowane i weryfikowane znacznie szybciej, co ograniczało koszty. Dzięki elastyczności tych modułów zmiany w działaniu systemu wymagały tylko zmiany "mapy przepaleń", natomiast sama płytka drukowana pozostawała bez zmian. Możliwe było stworzenie uniwersalnych płytek ewaluacyjnych umożliwiających łatwe prototypowanie układu. 
 
-## CPLD	
+## Układy CPLD	
 Kolejnym krokiem w rozwoju programowalnych struktur logicznych było pojawienie się układów typu CPLD (*Complex Programmable Logic Device*). Ich struktura składa się z zestawu bloków logicznych wraz z częścią odpowiedzialną za połączenia wewnętrzne. Każdy z bloków składa się z:
 
 * matrycy elementów iloczynowych,
@@ -76,13 +76,13 @@ Blok odpowiedzialny za połączenia programowalne może być realizowany na dwa 
 1. połączenia oparte na matrycy, gdzie wyjścia każdego z bloków łączone jest do matrycy poprzez element pamiętający (komórka EPROM); ponadto istnieje możliwość zrealizowania wszystkich połączeń, tj. dowolne wejście może być połączone z dowolnym blokiem logicznym.
 1. połączenia oparte na multiplekserze, gdzie każdemu wejściu bloku logicznego odpowiada jeden multiplekser, a linie adresujące są programowane tak, aby zapewnić odpowiednie połączenia.
 
-Bloki logiczne swoją strukturą przypominają układy typu PAL. Jego rozmiar, określony liczbą wejść i makrokomórek, definiuje możliwości. Bloki te  zawierają zwykle od 4 do 20 makrokomórek, przy czym wystarczy ich 16 aby realizować szesnastobitowe funkcje logiczne w jednym bloku.
+Bloki logiczne swoją strukturą przypominają układy typu PAL.  Bloki te zawierają zwykle od 4 do 20 makrokomórek, przy czym wystarczy ich 16 aby realizować szesnastobitowe funkcje logiczne w jednym bloku.
 
 Makrokomórki składają się z przerzutników oraz układów sterowania polaryzacją, dzięki czemu można realizować zarówno funkcje proste jak i zanegowane. Dodatkowo układ CPLD często posiada makrokomórki we/wy, które stanowią bufor i zabezpieczenie w interfejsie I/O.
 
 Układy CPLD posiadają również inne, ciekawe własności. Oferują często konstruktorowi standard ISP (*In System Programmability*), który umożliwia programowania układu bezpośrednio w systemie bez konieczności umieszczania elementu w programatorze. Dodatkowo, nowsze układu implementują standard JTAG, który umożliwia debuggowanie i testowanie układu pracującego w systemie.
 
-## FPGA
+## Układy FPGA
 
 ![Matryca FPGA (źródło bibl:VHDL) ](./img/fpga.png "img:Rys3.3")
 
@@ -94,7 +94,7 @@ Układy CPLD posiadają również inne, ciekawe własności. Oferują często ko
 
 ![Pojedyncza komórka logiczna (źródło bibl:VHDL) ](./img/fpga_LB.png "img:Rys3.4")
 
-Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na jeszcze wyższym poziomie abstrakcji - tj. wyższym niż bramki logiczne i równania boolowskie. Wykorzystuje się w tym celu języki opisu sprzętu HDL (*Hardware Description Language*, np. *VHDL*, *Verilog*, *AHDL*), które umożliwiają stworzenie opisu behawioralnego. Do zaprogramowania konfiguracji FPGA należy wykorzystać środowisko dostarczone przez konkretnego dostawcę układu (np. Xilinx - ISE Web Pack, Altera - Quartus). 
+Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na jeszcze wyższym poziomie abstrakcji - tj. wyższym niż bramki logiczne i równania boolowskie. Wykorzystuje się w tym celu języki opisu sprzętu HDL (*Hardware Description Language*, np. *VHDL*, *Verilog*, *AHDL*). Do zaprogramowania konfiguracji FPGA należy wykorzystać środowisko dostarczone przez konkretnego dostawcę układu (np. Xilinx - ISE Web Pack, Altera - Quartus). 
 
 `więcej...`
 
@@ -106,7 +106,7 @@ Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na 
 * `są także inni dostawcy`
 
 ## Język VHDL
-Tworzenie skomplikowanych systemów cyfrowych wymaga wykorzytania odpowiednich narzędzi. Opis układu w postaci równań boolowskich jest trudny zarówno dla projektanta jak i osoby, która później może system rozwijać. Języki opisu sprzętu umożliwiają stworzenie opisu działania układu na różnych poziomach abstrakcji, dzięki czemu są bardziej elastyczne i pozwalają szybciej tworzyć skomplikowane struktury. Jednym z dwóch czołowych języków tego typu, obok języka Verilog, jest VHDL (*VHSIC Hardware Description Language*, *VHSIC - Very-High-Speed Integrated Circuit*), który został wykorzystany do realizacji projektu w ramach pracy dyplomowej.
+Tworzenie skomplikowanych systemów cyfrowych wymaga wykorzytania odpowiednich narzędzi. Opis układu w postaci równań boolowskich jest trudny zarówno dla projektanta jak i osoby, która później może system rozwijać. Języki opisu sprzętu umożliwiają stworzenie opisu działania układu na różnych poziomach abstrakcji, dzięki czemu są bardziej elastyczne i pozwalają szybciej tworzyć skomplikowane struktury. Jednym z dwóch czołowych języków tego typu, obok języka Verilog, jest VHDL (* **V**ery-High-Speed Integrated Circuit **H**ardware **D**escription **L**anguage*), który został wykorzystany do realizacji projektu w ramach pracy dyplomowej.
 
 Język ten zawiera użyteczne konstrukcje semantyczne, umożliwiające tworzenie jasnego i czytelnego kodu reprezentującego układ logiczny. Projekt może być opisany na wielu poziomach abstrakcji, dzięki czemu programista ma dużą swobodę i elastyczność w tworzeniu konfiguracji FPGA. Język umożliwia kreowanie i ładowanie zewnętrznych bibliotek, a także realizację modułów, które mogą być wielokrotnie wykorzystywane w projekcie (struktura hierarchiczna). Większość instrukcji wykonywana jest równolegle, jednakże istnieją sposoby na stworzenie kodu wykonywanego sekwencyjnie (tzw. procedury) wraz z instrukcjami warunkowymi i pętlami znanymi z klasycznych języków programowania.
 
@@ -115,6 +115,9 @@ Dużą zaletą tej technologii jest uniezależnienie opisu układu od wyboru kon
 Niestety, możliwość tworzenia projektu na wysokim poziomie abstrakcji niesie za sobą pewne konsekwencja. Narzędzia do syntezy czasem tworzą nieoptymalną implementację. Jest to często winą samego projektanta, który tworzy kod niezgodny z przyjętymi konwecjami. Co więcej, niedoświadczony programista może napisać kod, który w ogóle nie jest syntezowalny. Z drugiej strony - sama idea tworzenia układu cyfrowego na podstawie opisu w języku HDL powoduje przyjęcie pewnych standardów przez kompilator i generowanie nieoptymalnych rozwiązań w przypadku niecodziennych konstrukcji.
 
 ## Implementacja 
+
+`czym jest implementacja?`
+
 Implementacja składa się z kilku etapów:
 
 1. Zdefiniowanie założeń i wymagań projektowych,
@@ -125,7 +128,7 @@ Implementacja składa się z kilku etapów:
 1. Zaprogramowanie układu.
 
 ### Zdefiniowanie założeń i wymagań projektowych
-Każdy projekt techniczny musi zacząć się od zdefuniowania konkretnych założeń. Nie inaczej jest w trakcie projektowania systemów cyfrowych. Należy zdefiniować wymagania, szczególnie dotyczące:
+Każdy projekt techniczny musi zacząć się od zdefniowania konkretnych założeń. Nie inaczej jest w trakcie projektowania systemów cyfrowych. Należy zdefiniować wymagania, szczególnie dotyczące:
 
 * częstotliwości działania układu,
 * czasów ustawiania i propagacji sygnałów,
@@ -145,7 +148,7 @@ W omawianym projekcie została wykorzystana pierwsza z nich. Polega na podzielen
 Po stworzeniu bloków składowych projektu należy przejść do zakodowania funkcjonalności każdego z nich. 
 
 ### Symulacja kodu źródłowego
-Środowiska do projektowania umożliwiają przeniesienie fazy symulacji i testowania do wczesnych etapów tworzenia systemu. Jest to tzw. "symulacja behawioralna", która obrazuje zachowanie układu opisanego językiem HDL bez uwzględnienia wpływu syntezy oraz routowania. Można zaobserwować podstawowe zachowanie zrealizowanego projektu, jednakże bez tak kluczowych czynników, jak np. opóźnienia i czasy propagacji.
+Środowiska do projektowania umożliwiają przeniesienie fazy symulacji i testowania do wczesnych etapów tworzenia systemu. Jest to tzw. "symulacja behawioralna", która obrazuje zachowanie układu opisanego językiem HDL bez uwzględnienia wpływu syntezy oraz poprowadzenia połączeń. Można zaobserwować podstawowe zachowanie zrealizowanego projektu, jednakże bez tak kluczowych czynników, jak np. opóźnienia i czasy propagacji.
 
 ### Synteza, optymalizacja i dopasowanie projektu
 #### Synteza 
