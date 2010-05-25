@@ -116,9 +116,7 @@ Niestety, możliwość tworzenia projektu na wysokim poziomie abstrakcji niesie 
 
 ## Implementacja 
 
-`czym jest implementacja?`
-
-Implementacja składa się z kilku etapów:
+Implementacja to pełen proces stworzenia układu cyfrowego odpowiadającego naszym oczekiwaniom. W jego wyniku otrzymujemy poprawną konfigurację, którą można zaprogramować układ FPGA i uruchomić w pełni działające urządzenie. Poszczególne etapy implementacji to:
 
 1. Zdefiniowanie założeń i wymagań projektowych,
 1. Opisanie projektu w języku typu *HDL*,
@@ -448,14 +446,58 @@ W związku z tym zastąpiono bramkę AND multiplekserem przystosowanym do przeł
 ### Testowanie
 
 ## Interfejs 
-# 6. Badania układu
-## Pomiary oscyloskopowe
-## Interfejs radiowy?
+
+# 6. Badania
+
+## Cel i zakres badań
+Celem badań jest weryfikacja realizacji projektu pod kątem zdefiniowanych wcześniej wymagań. Należy sprawdzić, czy parametry określone we wstępnych założeniach spełniają określone kryteria. Opisane w `rozdziale 5.5` symulacje potwierdzają zgodnośc z założeniami, jednakże pełną wartość projektu mogą oddać tylko rzeczywiste pomiary.
+
+## Układ pomiarowy 
+
+Układ pomiarowy składa się z:
+
+* pełnego systemu sterownika opracowanego w ramach pracy,
+* płytki konwertera standardu LVDS -> PECL,
+* oscyloskopu próbkującego TexasInstruments TDS8200.
+
+`rysunek`
+
+## Metodyka pomiarów
+
+Przeprowadzenie dokładnych badań parametrów czasowych wymaga synchronizacji wyzowlenia oscyloskopu z badanym sygnałem. Aby zapewnić spełnienie tego warunku dokonano niewielkiej modyfikacji układu wyprowadzając jeden z wewnętrznych sygnałów do wyjścia układu FGPA. Sygnał ten jest zsynchronizowany z początkiem cyklu generacji pakietów, w związku z czym może zostać użyty do wyzwolenia oscyloskopu.
+
+`rysunek - paczka i wyzwolenie`
+
+Po zsynchronizowaniu oscyloskopu realizowano pomiary poprzez standardowe funkcje dostępne w cyfrowych urządzeniach pomiarowych, takie jak *marker*, *delta marker*, *burst width measure* itd.
+
+## Pomiar parametrów czasowych sygnałów
+
+### Szerokość paczki (burst width)
+
+### Szerokość preambuły 
+
+### Szerokość impulsu
+
+### Odstęp międzybitowy
+
+## Pomiar parametru jitter
+
+W systemach określających bardzo dokładnie pozycję istotnym parametrem jest jitter. Niewielkie wahania momentu wyzwolenia sygnału może powodować duży błąd dokładności określenia pozycji (`opisane w rozdziale o lokalizacji uwb`). Stąd wynika rygorystyczne wymaganie na ten parametr.
+
+`metodyka badania jittera`
+
+Na początku zbadano jitter samego zegara umieszczonego na płytce z modułem FPGA, którego duża wartość stawiałaby pod znakiem zapytania sens stosowania takiego modułu w sterowniku. Zbadano sygnał, którym taktowane jest generowanie sekwencji danych (tj. zegar główny po podzieleniu przez 10) i otrzymano wartość 10 [ps], co można uznać za bardzo dobrą. Kolejne moduły będą do tej wartości dodawać swój jitter.
+
+`jaki jitter ma max9157 i ten drugi?`
+
 # 7. Podsumowanie
+
 # 8. Bibliografia
 * `bib:LVDS` Low-Voltage Differential Signaling, International Engineering Consortium, 
 * `bibl:praca p.Kosińskiego` - praca magisterska 
 * `bibl:datasheetMAX9517`
+* `bibl:VHDL` Język VHDL - Kevin Skahill
+
 # 9. Dodatki
 ## 9.1. Standard LVDS
 
