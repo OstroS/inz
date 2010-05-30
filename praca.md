@@ -106,12 +106,12 @@ Tablica LUT realizuję obsługę logiki. W jej strukturze zapisana jest tablica 
 
 Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na jeszcze wyższym poziomie abstrakcji - tj. wyższym niż bramki logiczne i równania boolowskie. Wykorzystuje się w tym celu języki opisu sprzętu HDL (*Hardware Description Language*, np. *VHDL*, *Verilog*, *AHDL*). Do zaprogramowania konfiguracji FPGA należy wykorzystać środowisko dostarczone przez konkretnego dostawcę układu (np. Xilinx - ISE Web Pack, Altera - Quartus). 
 
-### Spartan 3
+### Xilinx Spartan3
+Na rynku powszechnie dostępne są układy wielu producentów. Do najbardziej znaczących należą Altera i Xilinx. Realizacja omawianej pracy została oparta na układzie Xilinx Spartan3 XC3S200. Posiada on 4 320 komórek logicznych, co jest odpowiednikiem ok. 200 000 bramek logicznych. Jego struktura jest rozszerzoną wersją omówionej wcześniej koncepcji i została przedstawiona na rysunku 3.5.
 
-* `kilka informacji z datasheetow`
-* `specyficzne, fajne zastosowania`
-* `ISE WEB PACK `
-* `są także inni dostawcy`
+![Architektura układu FPGA Xilinx Spartn3 XC3S200 (źródło bibl:spartan ](./img/spartan3.png "img:Rys3.5")
+
+Poza podstawowymi elementami, którym są bloki logiczne, możemy wyróżnić także pamięc typu RAM (składająca się z bloków po 18 kilobitów) oraz blok DCM (Digital Clock Manager), który dostarcza wszystkich funkcji niezbędnych z dystrybucją sygnału zegarowego oraz operacjach z nim związanych. Układ posiada 173 linie wejścia/wyjścia, które umożliwiają współpracę z sygnałami przesyłanymi w różnych standardach zarówno asymetrycznych (np. LVCMOS) jak i symetrycznych (np. LVDS).
 
 ## Język VHDL
 Tworzenie skomplikowanych systemów cyfrowych wymaga wykorzytania odpowiednich narzędzi. Opis układu w postaci równań boolowskich jest trudny zarówno dla projektanta jak i osoby, która później może system rozwijać. Języki opisu sprzętu umożliwiają stworzenie opisu działania układu na różnych poziomach abstrakcji, dzięki czemu są bardziej elastyczne i pozwalają szybciej tworzyć skomplikowane struktury. Jednym z dwóch czołowych języków tego typu, obok języka Verilog, jest VHDL (**V**ery-High-Speed Integrated Circuit **H**ardware **D**escription **L**anguage*), który został wykorzystany do realizacji projektu w ramach pracy dyplomowej.
