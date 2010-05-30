@@ -9,10 +9,15 @@ ___
 ## Sygnały UWB 
 
 ### Charakterystyka
+UWB (Ultra Wide Band) to technologia umożliwiająca przesyłanie sygnałów radiowych o bardzo dużej szerokości pasma. Według norm FCC (Federal Communications Commission) sygnał ultraszerokopasmowy posiada względną szerokość pasma (określoną jako pasmo 10dB spadku od poziomu składowej o częstotliwości środkowej) większą od 20% lub bezwzględną szerokość pasma większą od 500MHz. W Europie, gdzie organem regulującym jest Komisja Europejska, sygnałem ultraszerokopasmowym nazywamy taki, którego bezwględna szerokość pasma jest większa już od 50MHz.
+
+Zgodnie z twierdzeniem Shannona maksymalna możliwa do osiągnięcia przepływność transmisji informacji jest wprost proporcjonalna do bezwzględnej szerokości pasma sygnału. W związku z tym sygnały UWB mają potencjalnie bardzo duże możliwości z punktu widzenia przesyłania strumieni danych o dużej przepływności. Dodaktowo szerokie pasmo umożliwia ograniczenie mocy nadawanego sygnału, dzięki czemu urządzania wykorzystujące UWB do transmisji radiowej będą bardziej energooszczędne. Dzięki impulsowej pracy i niewielkim mocom sygnałów systemy te mogą pracować w zajętych już pasmach będąc praktycznie niewykrywalne przez osoby postronne.
+
+Transmisja radiowa wykorzystująca UWB ma przed sobą ciekawą przyszłość. Dzisiejsze mobilne systemy są coraz bardziej miniaturyzowane i narzucane są na nie wysokie wymagania dotyczące zużycia energii. Ponadto urządzania stają się coraz bardziej multimedialne, w związku z czym rosną oczekiwania co do obsługiwanych przepływności strumieni danych. Wprowadzenie systemów UWB do transmisji danych na pewno ułatwi producentom sprzętu spełnienie rosnących wymagań.
 
 ### Propagacja
 
-### Możliwości
+
 
 ## Systemy TDOA
 
@@ -50,11 +55,11 @@ Rozwój systemów pociągnął za sobą znaczne skomplikowanie układów cyfrowy
 ## Układy logiki programowalnej
 Pierwsze układy logiki programowalnej to tzw. układy PAL (*Programmable Array Logic*). Ich wewnętrzna budowa składała się z matrycy bramek AND oraz matrycy bramek OR, gdzie matryca iloczynów była programowalna, natomiast matryca OR - połączona na stałe. 
 
-`przykład struktury - najlepiej z jakiegoś datasheeta`
+![Struktura PAL](./img/pal.png "img:Rys3.2")
 
 Dowolne kombinacje połączeń wewnątrz struktury umożliwiały realizację bardziej skomplikowanych funkcji w łatwiejszy sposób. Po raz pierwszy wykorzystano oprogramowanie komputerowe typu CAD (*Computer Aided Design*), które wspomagało projektanta w trakcie tworzenia układu. Zmieniło się podejście do samego procesu projektowania.
 
-![Fazy projektowania (źródło bibl:VHDL) ](./img/fazy_projektowania_cpld.png "img:Rys3.2")
+![Fazy projektowania (źródło bibl:VHDL) ](./img/fazy_projektowania_cpld.png "img:Rys3.3")
 
 Konstruktor nie musiał samemu realizować połączeń między bramkami, gdyż zajmowało się tym oprogramowanie, które dostarczało gotową "mapę przepaleń" połączeń wewnętrzych układu PAL.
 
@@ -86,7 +91,7 @@ Układy CPLD posiadają również inne, ciekawe własności. Oferują często ko
 
 **Field Programmable Gate Array** to aktualnie najbardziej rozwinięty rodzaj programowalnych układów logicznych, który umożliwia realizację bardzo złożonych struktur. Posiada możliwości identyczne z układami typu ASIC (Application-Specific Integrated Circuit - zintegrowane układy projektowane do zastosowania w konkretnym systemie), dla których często stanowi prototyp. Mimo iż układy FPGA są zazwyczaj wolniejsze i pobierają więcej mocy można je wykorzystywać w wielu aplikacjach jako rozwiązanie ostateczne. Na ich rzecz przemawia krótszy czas projektowania oraz niższe koszty produkcji.
 
-![Matryca FPGA (źródło bibl:VHDL) ](./img/fpga.png "img:Rys3.3")
+![Matryca FPGA (źródło bibl:VHDL) ](./img/fpga.png "img:Rys3.5")
 
 Wewnętrzna struktura typowego układu FPGA została przedstawiona na rysunku 3.3. Możemy na niej wyróżnić:
 
@@ -94,9 +99,9 @@ Wewnętrzna struktura typowego układu FPGA została przedstawiona na rysunku 3.
 * bloki logiczne,
 * połączenia programowalne.
 
-Bloki logiczne wraz z programowalnymi połączeniami stanowią o ogromnych możliwościach układów FPGA. Każdy z bloków umożliwia realizację dowolnej funkcji boolowskiej czterech argumentów. Ich wewnętrzna struktura została przedstawiona na rysunku 3.4 i składa się z:
+Bloki logiczne wraz z programowalnymi połączeniami stanowią o ogromnych możliwościach układów FPGA. Każdy z bloków umożliwia realizację dowolnej funkcji boolowskiej czterech argumentów. Ich wewnętrzna struktura została przedstawiona na rysunku 3.6 i składa się z:
 
-![Zarys pojedynczej komórki logicznej (źródło bibl:VHDL) ](./img/fpga_LB.png "img:Rys3.4")
+![Zarys pojedynczej komórki logicznej (źródło bibl:VHDL) ](./img/fpga_LB.png "img:Rys3.6")
 
 * tablicy typu LUT (*Look Up Table*),
 * sumatora,
@@ -107,9 +112,9 @@ Tablica LUT realizuję obsługę logiki. W jej strukturze zapisana jest tablica 
 Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na jeszcze wyższym poziomie abstrakcji - tj. wyższym niż bramki logiczne i równania boolowskie. Wykorzystuje się w tym celu języki opisu sprzętu HDL (*Hardware Description Language*, np. *VHDL*, *Verilog*, *AHDL*). Do zaprogramowania konfiguracji FPGA należy wykorzystać środowisko dostarczone przez konkretnego dostawcę układu (np. Xilinx - ISE Web Pack, Altera - Quartus). 
 
 ### Xilinx Spartan3
-Na rynku powszechnie dostępne są układy wielu producentów. Do najbardziej znaczących należą Altera i Xilinx. Realizacja omawianej pracy została oparta na układzie Xilinx Spartan3 XC3S200. Posiada on 4 320 komórek logicznych, co jest odpowiednikiem ok. 200 000 bramek logicznych. Jego struktura jest rozszerzoną wersją omówionej wcześniej koncepcji i została przedstawiona na rysunku 3.5.
+Na rynku powszechnie dostępne są układy wielu producentów. Do najbardziej znaczących należą Altera i Xilinx. Realizacja omawianej pracy została oparta na układzie Xilinx Spartan3 XC3S200. Posiada on 4 320 komórek logicznych, co jest odpowiednikiem ok. 200 000 bramek logicznych. Jego struktura jest rozszerzoną wersją omówionej wcześniej koncepcji i została przedstawiona na rysunku 3.7.
 
-![Architektura układu FPGA Xilinx Spartn3 XC3S200 (źródło bibl:spartan ](./img/spartan3.png "img:Rys3.5")
+![Architektura układu FPGA Xilinx Spartn3 XC3S200 (źródło bibl:spartan ](./img/spartan3.png "img:Rys3.7")
 
 Poza podstawowymi elementami, którym są bloki logiczne, możemy wyróżnić także pamięc typu RAM (składająca się z bloków po 18 kilobitów) oraz blok DCM (Digital Clock Manager), który dostarcza wszystkich funkcji niezbędnych z dystrybucją sygnału zegarowego oraz operacjach z nim związanych. Układ posiada 173 linie wejścia/wyjścia, które umożliwiają współpracę z sygnałami przesyłanymi w różnych standardach zarówno asymetrycznych (np. LVCMOS) jak i symetrycznych (np. LVDS).
 
