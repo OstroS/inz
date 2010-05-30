@@ -84,19 +84,27 @@ Układy CPLD posiadają również inne, ciekawe własności. Oferują często ko
 
 ## Układy FPGA
 
+**Field Programmable Gate Array** to aktualnie najbardziej rozwinięty rodzaj programowalnych układów logicznych, który umożliwia realizację bardzo złożonych struktur. Posiada możliwości identyczne z układami typu ASIC (Application-Specific Integrated Circuit - zintegrowane układy projektowane do zastosowania w konkretnym systemie), dla których często stanowi prototyp. Mimo iż układy FPGA są zazwyczaj wolniejsze i pobierają więcej mocy można je wykorzystywać w wielu aplikacjach jako rozwiązanie ostateczne. Na ich rzecz przemawia krótszy czas projektowania oraz niższe koszty produkcji.
+
 ![Matryca FPGA (źródło bibl:VHDL) ](./img/fpga.png "img:Rys3.3")
 
-**Field Programmable Gate Array** to układy, których architekturę wewnętrzną tworzy matryca komórek logicznych, które komunikują się między sobą poprzez linie poprowadzone w kanałach połączeniowych. Komórki logiczne najczęściej posiadają 4 wejścia i potrafią zrealizować dowolną funkcję logiczną czterech wejść. Wewnątrz składają się z:
+Wewnętrzna struktura typowego układu FPGA została przedstawiona na rysunku 3.3. Możemy na niej wyróżnić:
+
+* bloki wejścia/wyjścia,
+* bloki logiczne,
+* połączenia programowalne.
+
+Bloki logiczne wraz z programowalnymi połączeniami stanowią o ogromnych możliwościach układów FPGA. Każdy z bloków umożliwia realizację dowolnej funkcji boolowskiej czterech argumentów. Ich wewnętrzna struktura została przedstawiona na rysunku 3.4 i składa się z:
+
+![Zarys pojedynczej komórki logicznej (źródło bibl:VHDL) ](./img/fpga_LB.png "img:Rys3.4")
 
 * tablicy typu LUT (*Look Up Table*),
 * sumatora,
 * przerzutnika typu D.
 
-![Pojedyncza komórka logiczna (źródło bibl:VHDL) ](./img/fpga_LB.png "img:Rys3.4")
+Tablica LUT realizuję obsługę logiki. W jej strukturze zapisana jest tablica prawdy, do której w trakcie implementacji zostało sprowadzone równanie boolowskie lub opis w języki HDL. Przerzutnik umożliwia synchronizację sygnału wyjściowego z dostarczonym sygnałem zegarowym. Za pomocą multipleksera natomiast można decydować czy odpowiedź na wyjściu ma być synchroniczna czy asynchroniczna. 
 
 Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na jeszcze wyższym poziomie abstrakcji - tj. wyższym niż bramki logiczne i równania boolowskie. Wykorzystuje się w tym celu języki opisu sprzętu HDL (*Hardware Description Language*, np. *VHDL*, *Verilog*, *AHDL*). Do zaprogramowania konfiguracji FPGA należy wykorzystać środowisko dostarczone przez konkretnego dostawcę układu (np. Xilinx - ISE Web Pack, Altera - Quartus). 
-
-`więcej...`
 
 ### Spartan 3
 
@@ -106,7 +114,7 @@ Przy projektowaniu układów typu FPGA konstruktor może tworzyć aplikację na 
 * `są także inni dostawcy`
 
 ## Język VHDL
-Tworzenie skomplikowanych systemów cyfrowych wymaga wykorzytania odpowiednich narzędzi. Opis układu w postaci równań boolowskich jest trudny zarówno dla projektanta jak i osoby, która później może system rozwijać. Języki opisu sprzętu umożliwiają stworzenie opisu działania układu na różnych poziomach abstrakcji, dzięki czemu są bardziej elastyczne i pozwalają szybciej tworzyć skomplikowane struktury. Jednym z dwóch czołowych języków tego typu, obok języka Verilog, jest VHDL (* **V**ery-High-Speed Integrated Circuit **H**ardware **D**escription **L**anguage*), który został wykorzystany do realizacji projektu w ramach pracy dyplomowej.
+Tworzenie skomplikowanych systemów cyfrowych wymaga wykorzytania odpowiednich narzędzi. Opis układu w postaci równań boolowskich jest trudny zarówno dla projektanta jak i osoby, która później może system rozwijać. Języki opisu sprzętu umożliwiają stworzenie opisu działania układu na różnych poziomach abstrakcji, dzięki czemu są bardziej elastyczne i pozwalają szybciej tworzyć skomplikowane struktury. Jednym z dwóch czołowych języków tego typu, obok języka Verilog, jest VHDL (**V**ery-High-Speed Integrated Circuit **H**ardware **D**escription **L**anguage*), który został wykorzystany do realizacji projektu w ramach pracy dyplomowej.
 
 Język ten zawiera użyteczne konstrukcje semantyczne, umożliwiające tworzenie jasnego i czytelnego kodu reprezentującego układ logiczny. Projekt może być opisany na wielu poziomach abstrakcji, dzięki czemu programista ma dużą swobodę i elastyczność w tworzeniu konfiguracji FPGA. Język umożliwia kreowanie i ładowanie zewnętrznych bibliotek, a także realizację modułów, które mogą być wielokrotnie wykorzystywane w projekcie (struktura hierarchiczna). Większość instrukcji wykonywana jest równolegle, jednakże istnieją sposoby na stworzenie kodu wykonywanego sekwencyjnie (tzw. procedury) wraz z instrukcjami warunkowymi i pętlami znanymi z klasycznych języków programowania.
 
@@ -497,6 +505,7 @@ Na początku zbadano jitter samego zegara umieszczonego na płytce z modułem FP
 * `bibl:praca p.Kosińskiego` - praca magisterska 
 * `bibl:datasheetMAX9517`
 * `bibl:VHDL` Język VHDL - Kevin Skahill
+* `bibl:spartan` Xilinx Spartan 3 FPGA Datasheet
 
 # 9. Dodatki
 ## 9.1. Standard LVDS
