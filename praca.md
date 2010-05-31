@@ -15,6 +15,16 @@ Zgodnie z twierdzeniem Shannona maksymalna możliwa do osiągnięcia przepływno
 
 Transmisja radiowa wykorzystująca UWB ma przed sobą ciekawą przyszłość. Dzisiejsze mobilne systemy są coraz bardziej miniaturyzowane i narzucane są na nie wysokie wymagania dotyczące zużycia energii. Ponadto urządzania stają się coraz bardziej multimedialne, w związku z czym rosną oczekiwania co do obsługiwanych przepływności strumieni danych. Wprowadzenie systemów UWB do transmisji danych na pewno ułatwi producentom sprzętu spełnienie rosnących wymagań.
 
+UWB to jednak nie tylko transmisja danych, ale także (a z punktu widzenia tej pracy - przede wszystkim) systemy lokalizcyjne. Szczególnie interesujące są rozwiązania umożliwiające lokalizację wewnątrz pomieszczenia. Potencjalne możliwości to m.in.:
+
+* lokalizacja i badanie przemieszczania się pracownika,
+* lokalizacja sprzętu, badanie zakresu jego wykorzystania,
+* systemy alarmowe,
+* lokalizacja funkcjonariuszy (bezpieczeństwo).
+
+Wykorzystanie systemów ultraszerokopasmowych do tych celów ma wiele korzyści. Przede wszystkim niskie poziomy i impulsowy charakter pracy umożliwia pracę obok innych systemów bez zakłóceń. Aktualne regulacje prawne nie umożliwiają jednak pracy takich systemów w otwartej przestrzeni. 
+
+
 ### 2.1.2. Propagacja
 
 ## 2.2. Systemy TDOA
