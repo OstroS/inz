@@ -1,7 +1,8 @@
-﻿* Table of contents
+* Table of contents
 {:toc}
 
 ___
+
 # 1. Wstęp  
 
 # 2. Systemy lokalizacyjne UWB
@@ -37,9 +38,9 @@ Systemy wykorzystujące UWB pracują najczęściej w środowisku zamkniętym. W 
 
 Do opisu propagacji sygnałów UWB najlepiej wykorzystać model *Saleh-Valenzuela*. Uwzględnia on bardzo bogaty profil wielodrogowości, gdyż sygnały, w zależności od środowiska propagacyjnego, mogą docierać różnymi drogami. Elementy powodujące odbicia mogą mięć różny wpływ na sygnały w zależności od ich częstotliwości, co w efekcie powoduje zmianę kształtu impulsu w punkcie odbioru. Model zmienia także standardowe zaniki Rayleigha na czynnik o charakterze rozkładu logarytmicznie normalnego, który lepiej oddaje charakter kanału dla sygnałów UWB.
 
-![Odpowiedź impulsowa kanału radiowego - przykład](./img/impulseResponse.gif "img:kanalRadiowy")
+![Odpowiedź impulsowa kanału radiowego - przykład](./img/impulseResponse.gif "Rys 2.1.")
 
-Typowa odpowiedź kanału radiowego pobudzonego impulsem UWB została zaprezentowana na rysunku `img:kanalRadiowy`. Można zauważyć charakterystyczne problemy, dotyczące takich sygnałów:
+Typowa odpowiedź kanału radiowego pobudzonego impulsem UWB została zaprezentowana na rysunku 2.1. Można zauważyć charakterystyczne problemy, dotyczące takich sygnałów:
 
 * kilka wyraźnych pików docierających różnymi drogami,
 * krótki impuls wygnerowany w nadajniku wyraźnie wydłużył się po przejściu przez kanał radiowy.
@@ -65,27 +66,37 @@ Istnieją dwa warianty omawianej metody. W pierwszej z nich sygnały nadawane s�
 
 Do implementacji systemów lokalizacyjnych bardzo dobrze nadają się sygnały typu UWB. Bardzo krótki czas trwania impulsu umożliwia detekcję czasu odbioru z dużą dokładnością co bezpośrednio przekłada się na dokładność określenia pozycji. Przykładowo (`bilb:wasowski`) w systemach pracujących z szerokością pasma 7.5GHz można osiągnąć rozdzielczość czasową odbioru impulsów rzędu 133ps, co przekłada się na zaledwie 4cm błędu określenia położenia. Natomiast wykorzystując systemy o szerokości pasma 500MHz uzyskujemy rozdzielczość 2ns, która powoduje 60cm błędu określenia pozycji. Można zatem wnioskować, że w dowolnym paśmie UWB >500MHz można uzyskać określenie lokalizacji obiektu z dokładnością mniejszą niż 1 metr, co jest bardzo dobrym wynikiem.
 
-## 2.3. System opracowany w PMR przez mgr Kosińskiego (tytuł roboczy)
+## 2.3. System lokalizacyjny opracowany w PMR IRE
 
 ### 2.3.1. Architektura
 
-Opracowany i opisany w `bibl:praca p.Kosińskiego` system składa się z z pięciu nadajników (układ cyfrowy CPLD, generator UWB oraz antena) połączonych szeregowo (struktura została przedstawiona na `rys 2.1`). Pierwszy z nich jest nadajnikiem nadrzędnym, który:
+W ramach programu SAFESPOT w Pracowni Miernictwa Radioelektronicznego Instytutu Radioelektroniki Politechniki Warszawskiej opracowano system lokalizacyjny wykorzystujący opisane wcześniej techniki. Jego ogólną koncepcję przedstawiono na rysunku 2.2/.
+
+![Ilustracja koncepcji systemu lokalizacyjnego opracowanego w ramach programu SAFESPOT](./img/safespot.png "Rys2.2")
+
+System służy do określenia pozycji samochodu, w którym umieszczono odpowiedzialny za dokanie pomiarów odbiornik połączony z komputerem realizującym obliczenia. Częśc nadawcza składa się z pięciu nadajników (układ cyfrowy CPLD, generator UWB oraz antena) połączonych szeregowo (struktura została przedstawiona na rysunku 2.3.). Pierwszy z nich jest nadajnikiem nadrzędnym, który:
 
 * decyduje o rozpoczęciu procesu generacji i wysyłaniu impulsów w łączu radiowym,
 * uruchamia kolejny nadajnik,
 * jest źródłem sygnału zegarowego.
 
-Każdy z kolejnych nadajników otrzymuje sygnał zegara oraz sygnał wyzwalający. Zegar jest regenerowany i wysyłany dalej, po czym jest używany jako lokalny sygnał zegarowy, dzięki czemu wszystkie nadajniki są ze sobą zsynchronizowane. Po otrzymaniu sekwencji sterującej, każdy nadajnik wysyła impulsy w łączu radiowym, które sterują pracą odbiornika. Odpowiednie sekwencje uruchamiają i zatrzymują pomiar czasu, a także niosą treść informacyjną umożliwiającą zidentyfikowanie konretnego nadajnika. Odbiornik, zgodnie ze sposobem działania systemów typu TDOA, mierzy różnicę czasów pomiędzy otrzymaniem sygnałów z poszczególnych nadajników. Po wysłaniu sekwencji z ostatniego nadajnika pomiar się kończy i odbiornik przechodzi do obliczania pozycji korzystając z zaprogramowanych algorytmów.
+![Schemat układu ](./img/kosinski.png "img:Rys2.3")
 
-![Schemat układu ](./img/kosinski.png "img:Rys2.1")
+Każdy z kolejnych nadajników otrzymuje sygnał zegara oraz sygnał wyzwalający. Zegar jest regenerowany i wysyłany dalej, po czym jest używany jako lokalny sygnał zegarowy, dzięki czemu wszystkie nadajniki są ze sobą zsynchronizowane. Po otrzymaniu sekwencji sterującej, każdy nadajnik wysyła impulsy w łączu radiowym, które sterują pracą odbiornika. Odbiornik, zgodnie ze sposobem działania systemów typu TDOA, mierzy różnicę czasów pomiędzy otrzymaniem sygnałów z poszczególnych nadajników. Po wysłaniu sekwencji z ostatniego nadajnika pomiar się kończy i rozpoczyna się etap obliczania pozycji. Proces nadawnia sygnałów jest ciągły, wobec czego obliczana pozycja jest cały czas uaktualniana.
 
 ### 2.3.2. Sygnały w łączu radiowym
 
-W łączu radiowym systemu nadawane były pakiety o strukturze przedstawionej na rysunku `rys 2.2`.
+W łączu radiowym systemu nadawane są pakiety o strukturze przedstawionej na rysunku rys 2.4.
 
-![Uproszczony schemat sygnałów w łączu radiowym ](./img/kosinski_sygnaly.png "Rys2.2")
+![Uproszczony schemat sygnałów w łączu radiowym ](./img/kosinski_sygnaly.png "Rys2.4")
 
-Preambuła umożliwia wysterowanie układu automatycznej regulacji wzmocnienia. Następnie przesyłana jest komenda STOP, która zatrzymuje pomiar czasu. Bity identyfikatora umożliwiają odbiornikowi rozpoznanie źródła przesyłanego sygnału. Pakiet kończy komenda uruchomiająca pomiar.
+Zrealizowanie odpowiednich pomiarów zapewniają pola *START* i *STOP*. Umieszczenie instrukcji w takiej kolejności wynika ze sposobu pracy systemów typu TDOA, w których mierzona jest różnica czasu między danymi rozkazami, co zostało zaprezentowane na rysunku 2.5.
+
+![Ilustracja sposobu pomiaru czasu przez odbiornik](./img/txnn.png "Rys2.5")
+
+Aby prawidłowo odebrać i przetworzyć sygnał UWB warto umieścić w odbiorniku układ automatycznej regulacji wzmocnienia. Do jego wysterowania służy preambuła - fragment pakietu, który jest nadawany na początku każdej paczki umożliwiający ustalenie wzmocnienia układu wejściowego odbiornika. Jest to istotnie, ponieważ kolejny stopień, którym jest przetwornik analogowo-cyfrowy, pracuje z sygnałami o ściśle określonych amplitudach.
+
+W pakiecie umieszczono także pole identyfikatora, które umożliwia rozróżnienie sygnałów emitowanych z poszczególnych nadajników.
 
 # 3. Systemy Cyfrowe
 
@@ -163,7 +174,7 @@ Na rynku powszechnie dostępne są układy wielu producentów. Do najbardziej zn
 Poza podstawowymi elementami, którym są bloki logiczne, możemy wyróżnić także pamięc typu RAM (składająca się z bloków po 18 kilobitów) oraz blok DCM (Digital Clock Manager), który dostarcza wszystkich funkcji niezbędnych z dystrybucją sygnału zegarowego oraz operacjach z nim związanych. Układ posiada 173 linie wejścia/wyjścia, które umożliwiają współpracę z sygnałami przesyłanymi w różnych standardach zarówno asymetrycznych (np. LVCMOS) jak i symetrycznych (np. LVDS).
 
 ## 3.5. Język VHDL
-Tworzenie skomplikowanych systemów cyfrowych wymaga wykorzytania odpowiednich narzędzi. Opis układu w postaci równań boolowskich jest trudny zarówno dla projektanta jak i osoby, która później może system rozwijać. Języki opisu sprzętu umożliwiają stworzenie opisu działania układu na różnych poziomach abstrakcji, dzięki czemu są bardziej elastyczne i pozwalają szybciej tworzyć skomplikowane struktury. Jednym z dwóch czołowych języków tego typu, obok języka Verilog, jest VHDL (**V**ery-High-Speed Integrated Circuit **H**ardware **D**escription **L**anguage*), który został wykorzystany do realizacji projektu w ramach pracy dyplomowej.
+Tworzenie skomplikowanych systemów cyfrowych wymaga wykorzytania odpowiednich narzędzi. Opis układu w postaci równań boolowskich jest trudny zarówno dla projektanta jak i osoby, która później może system rozwijać. Języki opisu sprzętu umożliwiają stworzenie opisu działania układu na różnych poziomach abstrakcji, dzięki czemu są bardziej elastyczne i pozwalają szybciej tworzyć skomplikowane struktury. Jednym z dwóch czołowych języków tego typu, obok języka Verilog, jest VHDL (**V**ery-High-Speed Integrated Circuit **H**ardware **D**escription **L**anguage), który został wykorzystany do realizacji projektu w ramach pracy dyplomowej.
 
 Język ten zawiera użyteczne konstrukcje semantyczne, umożliwiające tworzenie jasnego i czytelnego kodu reprezentującego układ logiczny. Projekt może być opisany na wielu poziomach abstrakcji, dzięki czemu programista ma dużą swobodę i elastyczność w tworzeniu konfiguracji FPGA. Język umożliwia kreowanie i ładowanie zewnętrznych bibliotek, a także realizację modułów, które mogą być wielokrotnie wykorzystywane w projekcie (struktura hierarchiczna). Większość instrukcji wykonywana jest równolegle, jednakże istnieją sposoby na stworzenie kodu wykonywanego sekwencyjnie (tzw. procedury) wraz z instrukcjami warunkowymi i pętlami znanymi z klasycznych języków programowania.
 
@@ -254,7 +265,7 @@ W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odp
 ## 4.2. Architektura systemu
 Modyfikacja systemu wymagała opracowania nowej architektury, która wyeliminuje problemy powstałe w poprzedniej realizacji. Zdecydowano o zmianie połączenia pierścieniowego nadajników na rzecz połączenia w gwiazdę wraz z centralnym układem sterującym.
 
-Takie połącznie posiada zdecydowanie więcej zalet, kosztem niewielkiej komplikacji układu. Do każdego z nadajników można wysyłać niezależnie i sekwencyjnie (bądź równolegle) sygnały, których parametry ustawia się w sterowniku. Każdy z modułów radiowych otrzymuje sygnał zegarowy bezpośrednio ze sterownika, dzięki czemu system jest niezależny od jitteru wprowadzanego przez każde z urządzeń (jitter nie kumuluje się, tak jak w poprzedniej wersji).
+Takie połącznie posiada zdecydowanie więcej zalet kosztem niewielkiej komplikacji układu. Do każdego z nadajników można wysyłać niezależnie i sekwencyjnie (bądź równolegle) sygnały, których parametry ustawia się w sterowniku. Każdy z modułów radiowych otrzymuje sygnał zegarowy bezpośrednio ze sterownika, dzięki czemu system jest niezależny od jitteru wprowadzanego przez każde z urządzeń (jitter nie kumuluje się, tak jak w poprzedniej wersji).
 
 `img:archSystemu`
 `dokładniejszy opis`
