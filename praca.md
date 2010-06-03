@@ -44,7 +44,7 @@ Niewątpliwą zaletą systemu TDOA jest brak konieczności synchronizacji zegar�
 
 Istnieją dwa warianty omawianej metody. W pierwszej z nich sygnały nadawane są od węzłów referencyjnych w stronę obiektu lokalizowanego, który jest odbiornikiem. Umożliwia to lokalizowanie jednoczesne wielu urządzeń będących w oszarze działania systemu, jednakże komplikuje to budowę odbiornika, w którym należy zaimplementować algorytmy obliczające pozycję. W drugiej wersji to lokalizowane urządzenie jest nadajnikiem, a węzły referencyjne odbierają sygnał. Zaletą tego rozwiązania jest uproszczenie urządzenia lokalizowanego i przeniesienie bloku obliczającego pozycję do jednego z węzłów. Taki system wymaga jednak wprowadzenia mechanizmu wielodostępu, aby móc lokalizować kilka urządzeń na raz. 
 
-`Krótkie impulsy umożliwiają precyzyjne określenie położenia`
+Do implementacji systemów lokalizacyjnych bardzo dobrze nadają się sygnały typu UWB. Bardzo krótki czas trwania impulsu umożliwia detekcję czasu odbioru z dużą dokładnością co bezpośrednio przekłada się na dokładność określenia pozycji. Przykładowo (`bilb:wasowski`) w systemach pracujących z szerokością pasma 7.5GHz można osiągnąć rozdzielczość czasową odbioru impulsów rzędu 133ps, co przekłada się na zaledwie 4cm błędu określenia położenia. Natomiast wykorzystując systemy o szerokości pasma 500MHz uzyskujemy rozdzielczość 2ns, która powoduje 60cm błędu określenia pozycji. Można zatem wnioskować, że w dowolnym paśmie UWB >500MHz można uzyskać określenie lokalizacji obiektu z dokładnością mniejszą niż 1 metr, co jest bardzo dobrym wynikiem.
 
 ## 2.3. System opracowany w PMR przez mgr Kosińskiego (tytuł roboczy)
 
