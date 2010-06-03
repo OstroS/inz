@@ -26,6 +26,25 @@ Wykorzystanie systemów ultraszerokopasmowych do tych celów ma wiele korzyści.
 
 
 ### 2.1.2. Propagacja
+Istnieje wiele modeli umożliwiających analizę propagacji sygnałów radiowych w przestrzeni. Najprostsze z nich można zastosować jedynie w sytuacji bezpośredniej widoczności (LOS) i trasy, która nie wpływa w żaden sposób na sygnały. Niestety w rzeczywistości występują różne niekorzystne zjawiska powodujące degradację sygnału odbieranego. Aby dokonać prawidłowej analizy sytuacji, należy wykorzystać model najlepiej oddający warunki występujące w badanym systemie. 
+
+Systemy wykorzystujące UWB pracują najczęściej w środowisku zamkniętym. W związku z tym największy wpływ na odbierany sygnał mają zjawiska:
+
+* wielodrogowości,
+* zaniki o rozkładzie innym niż Reyleigha.
+
+`wzór na model`
+
+Do opisu propagacji sygnałów UWB najlepiej wykorzystać model *Saleh-Valenzuela*. Uwzględnia on bardzo bogaty profil wielodrogowości, gdyż sygnały, w zależności od środowiska propagacyjnego, mogą docierać różnymi drogami. Elementy powodujące odbicia mogą mięć różny wpływ na sygnały w zależności od ich częstotliwości, co w efekcie powoduje zmianę kształtu impulsu w punkcie odbioru. Model zmienia także standardowe zaniki Rayleigha na czynnik o charakterze rozkładu logarytmicznie normalnego, który lepiej oddaje charakter kanału dla sygnałów UWB.
+
+![Odpowiedź impulsowa kanału radiowego - przykład](./img/impulseResponse.gif "img:kanalRadiowy")
+
+Typowa odpowiedź kanału radiowego pobudzonego impulsem UWB została zaprezentowana na rysunku `img:kanalRadiowy`. Można zauważyć charakterystyczne problemy, dotyczące takich sygnałów:
+
+* kilka wyraźnych pików docierających różnymi drogami,
+* krótki impuls wygnerowany w nadajniku wyraźnie wydłużył się po przejściu przez kanał radiowy.
+
+W związku z tym należy pamiętać o zachowaniu odpowiedniego odstępu międzybitowego w projektowanych systemach wykorzystujących UWB, aby ustrzec się przed problemami związanymi z propagacją sygnału w łączu radiowym.
 
 ## 2.2. Systemy TDOA
 Systemy lokalizacyjne jeszcze do niedawna kojarzyły się głównie z lotniczymi i wojskowymi radarami. W dzisiejszych czasach lokalizacja urządzeń coraz śmielej wkracza w różne dziedziny życia bliskie każemu człowiekowi. Dobrym tego przykładem tego zjawiska jest telefonia komórkowa, której operatorzy są zobligowani do wprowadzenia technicznych rozwiązań umożliwiających odpowiednim służbom lokalizację terminala. Pojawiają się także systemy, których celem jest określenie dokładnej pozycji i przemieszczenia danego czujnika wewnątrz budynku lub pojedynczego pomieszczenia.
@@ -312,12 +331,7 @@ Krótkiego wyjaśnienia wymaga kolejność transmitowanych pakietów - najpierw 
 
 ### 4.5.2. Parametry czasowe ###
 
-System transmisyjny oraz charakterystyka kanału radiowego narzucają określone wymagania co do parametrów parametrów czasowych przesyłanych sekwencji.
-
-![Odpowiedź impulsowa kanału radiowego - przykład](./img/impulseResponse.gif "img:kanalRadiowy")
-
-Na rysunku `img:kanalRadiowy - rysunek poglądowy ściągnięty z internetu` przedstawiono przykładową charakterystykę odpowiedzi impulsowej kanału radiowego po pobudzeniu impulsem UWB. Można zauważyć kilka charakterystycznych fragmentów. Pierwszy, wyraźny pik jest sygnałem, który dotarł bezpośrednio od nadajnika do odbiornika. Po krótkiej przerwie pojawiają się kolejne fragmenty sygnału, które powstały poprzez niekorzystne zjawisko propagacji wielodrogowej (sygnał nadany odbija się od dużych (w stosunku do długości fali) obiektów i dociera do odbiornika z opóźnieniem). Te składowe mogą zaburzyć poprawność odbioru, gdyż urządzenie odbiorcze nie jest w stanie rozróżnić impulsów bezpośrednich od odbitych. 
-
+`odniesienie do 2.1.2`
 W związku z powyższym faktem na etapie projektowania sygnałów transmitowanych drogą radiową należy zwrócić szczególną uwagę na odstęp miedzybitowy. Odpowiedni jego dobór jest kompromisem pomiędzy czasem działania systemu (krótki odstęp), a uchronieniem się od składowych wielodrogowych (większy odstęp). W trakcie badań poprzedzających projektowanie systemu stwierdzono, iż dla zakładanych warunków pracy odstęp międzybitowy na poziomie *200-300 \[ns\]* jest całkowicie wystarczający i skutecznie wyeliminuje omawiany problem.
 
 Z określonego odstępu międzybitowego wynika wprost częstotliwość z jaką należy generować impulsy. Zawiera się ona w przedziale od 3.33  do 5 MHz. Powyższym rozważaniom nie podlega jednak sygnał preambuły, w którym okres powtarzania impulsów wynosi *20 \[ns\]*, wobec czego częstotliwość taktowania układów generowania preambuły wynosi 50 \[MHz\].
