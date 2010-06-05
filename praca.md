@@ -504,22 +504,48 @@ W związku z tym zastąpiono bramkę AND multiplekserem przystosowanym do przeł
 
 `rysunek!!!!`
 
-### Testowanie
+## 5.5. Testowanie
 
+Zgodnie z omówionymi w rozdziale 3.6 krokami przedostatnim etapem implementacji jest weryfikacja projektu poprzez symulację projektu. Do jej przeprowadzenia wykorzystano narzędzie ModelSim dostarczone przez firmę Xilinx wraz z pakietem do tworzenia układów FPGA. Umożliwia on zdefiniowanie pobudzeń układu w funkcji czasu oraz obserwację odpowiedzi w postaci sygnałów wyjściowych.
 
-## Interfejs 
+Do najbardziej kluczowych testów można zaliczyć:
+
+* obserwacja wszystkich pakietów (`rys`),
+* obserwacja pojedynczego pakietu (`rys`),
+* obserwacja preambuły (`rys`),
+* obserwacja pojedynczego impulsu (`rys`).
+
+![Symulacja - wszystkie pakiety](./img/sym_calosc.png "img:sym_calosc")
+
+![Symulacja - pojedynczy pakiet (1 z 6)](./img/sym_single_burst.png "img:sym_single_burst")
+
+![Symulacja - preambuła jednego z pakietów](./img/sym_preamb.png "img:sym_preambula")
+
+Po zapoznaniu się z przebiegami sygnałów wyjściowych można stwierdzić, że generowane pakiety są zgodne z oczekiwaniami. Sześć generatorów jest uruchamianych sekwencyjnie, każdy pakiet rozpoczyna odpowiednia preambuła, a generowane impulsy odpowiadają zaprogramowanymi w układzie wartościom. Ponadto impulsy są zmodulowane zgodnie z omówioną w rozdziale 4.5.3 zmodyfikowaną modulacją OOK.
+
+Dokonano również pomiarów parametrów czasowych sygnałów, aby móc później skonfrontować te wartości z badaniami zaprogramowanego układu.
+
+Parametr | Jednostka | Wartość |
+---------|-----------|---------|
+Dlugość pakietu | us | 16,8 |
+Długość preambuły | ns | 410 |
+`Długość pojedynczego impulsu` | ns | `200` |
+`Odstęp międzybitowy` | ns | `400` |
+
 
 # 6. Badania
 
-## Cel i zakres badań
-Celem badań jest weryfikacja realizacji projektu pod kątem zdefiniowanych wcześniej wymagań. Należy je przeprowadzić dwustopniowo:
+## 6.1. Cel i zakres badań
+Celem badań jest weryfikacja realizacji projektu pod kątem zdefiniowanych wcześniej wymagań. Wyszczególniono dwa etapy przeprowadzenia pomiarów:
+
 * badania funkcjonalne, określające zgodność generowanych symboli z założeniami,
 * badania parametrów czasowych, weryfikujące zależności czasowe między symbolami oraz pełnymi pakietami.
-Opisane w `rozdziale 5.5` symulacje potwierdzają zgodnośc z założeniami, jednakże pełną wartość projektu mogą oddać tylko rzeczywiste pomiary.
 
-## Układ pomiarowy 
+Opisane w rozdziale 5.5 symulacje potwierdzają zgodnośc z założeniami. Należy jednak pamiętać, iż mimo dużego stopnia zaawansowania narzędzi do symulacji, w rzeczywistym układzie mogą nastąpić nieprzewidziane zjawiska, które nie zostały przewidziane w trakcie komputerowej analizy. Dlatego dopiero pomiary zaprogramowanego układu FPGA mogą oddać pełną wartość projektu.
 
-Układ pomiarowy składa się z:
+## 6.2. Układ pomiarowy 
+
+Do weryfikacji poprawności generowanych sekwencji systemu cyfrowego najlepiej wykorzystać instrumenty umożliwiające obserwację przebiegów sygnałów w dziedzinie czasu. W związku z tym układ pomiarowy składa się z:
 
 * pełnego systemu sterownika opracowanego w ramach pracy,
 * płytki konwertera standardu LVDS -> LVPECL,
@@ -530,58 +556,92 @@ Układ pomiarowy składa się z:
 
 Wstępnej oceny poprawności działania układu można dokonać wykorzystując prostszy oscyloskop HP. Dopiero pomiar parametrów czasowych z dużą dokładnością wymaga zastosowania bardziej skomplikowanego przyrządu, jakim jest oscyloskop TD8900. Płytka konwertera LVDS->LVPECL oparta została na układach MAX9375. Standard LVPECL (Low Voltage Positive Emmiter-Coupled Logic) umożliwia dystrybucję bardzo szybkich sygnałów cyfrowych w liniach 50 `omowych`, które mogą być podłączone bezpośrednio do wejścia oscyloskopu. Użycie konwertera zwalnia projektanta z konieczności dopasowania wyjścia systemu do impedancji wejściowej urządzenia pomiarowego.
 
-## Metodyka pomiarów
+## 6.3. Metodyka pomiarów
 
 Przeprowadzenie dokładnych badań parametrów czasowych wymaga synchronizacji wyzowlenia oscyloskopu z badanym sygnałem. Aby zapewnić spełnienie tego warunku dokonano niewielkiej modyfikacji układu wyprowadzając jeden z wewnętrznych sygnałów do wyjścia układu FGPA. Sygnał ten jest zsynchronizowany z początkiem cyklu generacji pakietów, w związku z czym może zostać użyty do wyzwolenia oscyloskopu.
 
 ![Ilustracja sygnału przebiegu pakietów i sygnału wyzwalającego](./img/pomiary/pakiety_wyzwolenie.png "img:pakiety_wyzwolenie")
 
-Po zsynchronizowaniu oscyloskopu realizowano pomiary poprzez standardowe funkcje dostępne w cyfrowych urządzeniach pomiarowych, takie jak *marker*, *delta marker*, *burst width measure* itd.
+Po zsynchronizowaniu oscyloskopu realizowano pomiary poprzez standardowe funkcje dostępne w cyfrowych urządzeniach pomiarowych, takie jak *marker*, *delta marker*, *burst width measure* itp.
 
-## Pomiary funkcjonalne
+## 6.4. Pomiary funkcjonalne
+
+Przed przystąpieniem do dokładnych pomiarów parametrów czasowych warto ocenić czy sygnały generowane przez zaprogramowany układ cyfrowy są zgodne z oczekiwaniami. Do tego celu wykorzystano tor pomiarowy zawierający oscyloskop HP Infinium (`patrz img:pomiary`). Na ekranie zaobserwowano przebiegi:
+
+* kompletnego pakietu:
 
 ![Przebieg czasowy kompletnego pakietu](./img/pomiary/calosc.png "img:calosc")
 
+* preambuły
+
 ![Przebieg czasowy preambuły](./img/pomiary/preambula.png "img:preambula")
 
-## Pomiar parametrów czasowych sygnałów
+Dokonano pomiarów wszystkich generowanych sygnałów, jednakże na oscylogramach przedstawiono badania tylko jedynczego pakietu. Szpilki widoczne na `rysunku img:calosc` są związane z reaktancją wprowadzaną przez sondę oscyloskopową i nie pojawiają się w układzie z dopasowanym wejściem.
 
-### Szerokość paczki 
+Analiza otrzymanych oscylogramów wykazuje, iż otrzymane rezultaty pokrywają się z wynikami symulacji, więc są zgodne z założeniami projektu. Kolejnym krokiem w badaniach sterownika jest sprawdzenie parametrów czasowych otrzymywanych sygnałów.
+
+## 6.5. Pomiar parametrów czasowych sygnałów
+
+System lokalizacyjny, do prawidłowego działania (tj. określenia pozycji z dużą dokładnością), wymaga sygnałów sterujących o rygorystycznych parametrach czasowych. 
+
+#### Szerokość paczki 
 
 ![Szerokość paczki impulsów](./img/pomiary/tds8900/burst_width.png "img:burstwidth")
 
-### Szerokość preambuły 
+`do ponownego sprawdzenia!`
 
-### Szerokość impulsu i odstęp międzybitowy
+#### Szerokość preambuły 
+
+`oscylogram oraz pomiar!`
+
+#### Szerokość impulsu i odstęp międzybitowy
 
 ![Szerokość pojedynczego impulsu](./img/pomiary/tds8900/impuls_szerokosc.png "img:impszer")
 
-### Impuls UWB
+`szerokość impulsu: 111 ns`
+
+![Odstęp międzybitowy dla impulsów w generowanym pakiecie](./img/pomiary/tds8900/szerokosc_impl_odstep.png "img:impszerodst")
+
+`odstep miedzybitowy: 222 ns`
+
+#### Impuls UWB
+
+Ostatnim krokiem w pomiarach wymienionych parametrów jest obserwacja wygenerowanego impulsu UWB. W tym celu podłączono wyjście systemu (oznaczone na rysunku `img:pomiary` *TRX1*) do generatora UWB, którego wyjście antenowe podłączono do oscyloskopu Tektronix TDS8900. Zaobserwowano przebieg widoczny na rysunku `img:uwb`.
 
 ![Pojedynczy impuls UWB](./img/pomiary/tds8900/uwb.png "img:uwb")
 
 
-## Pomiar parametru jitter
+
+## 6.6. Pomiar parametru jitter
 
 W systemach określających bardzo dokładnie pozycję istotnym parametrem jest jitter. Niewielkie wahania momentu wyzwolenia sygnału może powodować duży błąd dokładności określenia pozycji (`opisane w rozdziale o lokalizacji uwb`). Stąd wynika rygorystyczne wymaganie na ten parametr.
 
 `metodyka badania jittera`
 
-Na początku zbadano jitter samego zegara umieszczonego na płytce z modułem FPGA, którego duża wartość stawiałaby pod znakiem zapytania sens stosowania takiego modułu w sterowniku. Zbadano sygnał, którym taktowane jest generowanie sekwencji danych (tj. zegar główny po podzieleniu przez 10) i otrzymano wartość 10 [ps], co można uznać za bardzo dobrą. Kolejne moduły będą do tej wartości dodawać swój jitter.
+Na początku zbadano jitter samego zegara umieszczonego na płytce z modułem FPGA, którego duża wartość stawiałaby pod znakiem zapytania sens stosowania takiego modułu w sterowniku. Zbadano sygnał, którym taktowane jest generowanie sekwencji danych (tj. zegar główny po podzieleniu przez 10) i otrzymano wartość 4 [ps], co można uznać za bardzo dobrą. Kolejne moduły będą do tej wartości dodawać swój jitter.
 
 `jaki jitter ma max9157 i max9375 (2ps RMS)`
 
 ![Jitter sygnału zegarowego](./img/pomiary/tds8900/clk_jitter.png "img:clk_jitter")
 
+`jitter RMS: 4 [ps]`
+
 ![Jitter dla sygnału wyjściowego nadajnika nr 1](./img/pomiary/tds8900/trx1_jitter.png "img:trx1_jitter")
+
+`jitter RMS: 25 [ps]`
 
 ![Jitter dla sygnału wyjściowego nadajnika nr 6](./img/pomiary/tds8900/trx6_jitter.png "img:trx6_jitter")
 
-## Podsumowanie pomiarów
+`jitter RMS: 29 [ps]`
 
-Parametr | Założenia | Wartość zmierzona | Jednostka |
----------|-----------|-------------------|-----------|
-Szerokość preambuły | > 200 | 245,1 | us |
+    Wnioski? Jest całkiem ok, jitter jest na znosnym poziomie, ale trx6 ma lekko wiekszy. Zwiazane jest to z oddzielnymi licznikami - do wnioskow na poprawe na przyszlosc! :)
+
+
+## 6.7. Podsumowanie pomiarów
+
+Parametr | Jednostka | Założenia | Symulacja | Wartość zmierzona | 
+---------|-----------|-------------------|-----------|----------|
+Szerokość preambuły | > 200 | ... | 245,1 | us |
 
 # 7. Podsumowanie
 
