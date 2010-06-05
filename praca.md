@@ -246,17 +246,16 @@ Celem pracy jest usprawnienie systemu lokalizacyjnego opisanego w rozdziale 2.3.
 * czas dokonywanych zmian,
 * problemy z programowaniem każdegu układu z osobna.
 
-Istotnym problemem była także niedoskonała sekwencja bitów przesyłana w łączu radiowym. Bitów sterujących było zbyt mało, a preambuła każdego z pakietów nie spełniała do końca swojej roli. Przetwornik A/C umieszczony w pętli ARW wymaga dłuższej sekwencji taktowanej wyższym zegarem. Powiększenie liczby bitów poprawia także precyzję dekodowania sekwencji w odbiorniku.
+Istotnym problemem była także niedoskonała sekwencja bitów przesyłana w łączu radiowym. Bitów sterujących było zbyt mało, a preambuła każdego z pakietów nie spełniała do końca swojej roli, gdyż przetwornik A/C umieszczony w pętli ARW (patrz rozdział 2.3.2.) wymaga dłuższej sekwencji taktowanej wyższym zegarem. Powiększenie liczby bitów poprawia także precyzję dekodowania sekwencji w odbiorniku.
 
-`odniesienie do opisu we wstępie na temat roli preambuły i przetwornika a/c`
-
-W związku z tymi problemami zdecydowano się wprowadzić udoskonalenia, które zlikwidują wyżej wymienione błędy przy jednoczesnym zachowaniu wszystkich funkcji układu
+W związku z wymienionymi problemami zdecydowano się wprowadzić udoskonalenia, które zlikwidują wyżej wymienione błędy przy jednoczesnym zachowaniu wszystkich funkcji układu.
 
 Jednym z możliwych rozwiązań jest wprowadzenie centralnego układu sterującego  który zapewni:
 
 * sterowanie sekwencyjnym uruchamianiem nadajników UWB,
 * możliwość ustawienia parametrów konfiguracyjnych układu w jednym miejscu,
 * łatwą rozbudowę i skalowalność,
+* zmianę dotychczasowej sekwencji bitów na bardziej wydajną.
 
 W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odpowiednią konfiguracją oraz układami wejścia-wyjścia, które zostaną przedstawione w kolejnych rozdziałach. 
 
@@ -265,10 +264,9 @@ Modyfikacja systemu wymagała opracowania nowej architektury, która wyeliminuje
 
 Takie połącznie posiada zdecydowanie więcej zalet kosztem niewielkiej komplikacji układu. Do każdego z nadajników można wysyłać niezależnie i sekwencyjnie (bądź równolegle) sygnały, których parametry ustawia się w sterowniku. Każdy z modułów radiowych otrzymuje sygnał zegarowy bezpośrednio ze sterownika, dzięki czemu system jest niezależny od jitteru wprowadzanego przez każde z urządzeń (jitter nie kumuluje się, tak jak w poprzedniej wersji).
 
-![Ogólna architektura systemu lokalizacyjnego](./img/architektura.png "img:arch")
-`dokładniejszy opis`
+![Rys. 4.1. Ogólna architektura systemu lokalizacyjnego](./img/architektura.png "Rys. 4.1.")
 
-Poglądową architekturę systemu zaprezentowano na rysunku `img:archSystemu`. Układ FPGA pełni główną funkcję sterującą. Operator systemu `może ustawiać parametry` oraz wyzwolić działanie systemu. Sterownik generuje odpowiednie sygnały `(zgodnie z ustawieniami)` wysyłając je na wyjścia, po czym następuje konwersja standardu przesyłania danych do potrzeb linii transmisyjnych oraz odbiorników. Z konwertera sygnały przesyłane są kablami w standardzie Cat 5e (skrętka - 4 pary symetryczne) do rozdzielaczy, gdzie są przekazywane do odpowiednich nadajników.
+Poglądową architekturę systemu zaprezentowano na rysunku 4.1. Układ FPGA pełni główną funkcję sterującą i uruchamia się od razu po włączeniu zasilania. Sterownik generuje odpowiednie sygnały wysyłając je na wyjścia, po czym następuje konwersja standardu przesyłania danych do potrzeb linii transmisyjnych oraz odbiorników. Z konwertera sygnały przesyłane są kablami w standardzie Cat 5e (skrętka - 4 pary symetryczne) do rozdzielaczy, gdzie są przekazywane do odpowiednich nadajników.
 
 ## 4.3. Moduł FPGA
 Płytka uruchomieniowa opracowana w Pracowni Miernictwa Radiokomunikacyjnego z układem Xilinx Spartan3 doskonale nadaje się do realizacji i ewaluacji omawianego systemu. Zawiera wszystkie peryferia, które są niezbędne do niezależnego działania systemu bez konieczności trwałego połączenia z komputerem. Do najbardziej istotnych elementów należą:
@@ -280,9 +278,9 @@ Płytka uruchomieniowa opracowana w Pracowni Miernictwa Radiokomunikacyjnego z u
 * zestaw rekonfigurowalnych portów wejścia/wyjścia,
 * interfejs JTAG.
 
-Omawiana płytka została przedstawiona na rysunku `img:fpgaPCB`.
+Omawiana płytka została przedstawiona na rysunku 4.2.
 
-![Plytka uruchomieniowa z układem Xilinx Spartan 3](./img/plytki/fpga.png "img:fpgaPCB`")
+![Rys. 4.2. Plytka uruchomieniowa z układem Xilinx Spartan 3](./img/plytki/fpga.png "Rys. 4.2.")
 
 ## 4.4. Moduł konwertera CMOS - LVDS
 Układ FPGA Spartan3 firmy Xilinx posiada wyjścia w różnych standardach. Najbardziej uniwersalnym jest CMOS, w którym:
@@ -292,9 +290,7 @@ Układ FPGA Spartan3 firmy Xilinx posiada wyjścia w różnych standardach. Najb
 
 Taki sposób kodowania stanów logicznych jest bardzo dobry dla układów pracujących blisko siebie z krótkimi połączeniami. Jednakże przy przesyłaniu sygnałów długimi kablami nie zdaje on egzaminu, gdyż jest bardzo wrażliwy na zakłócenia elektromagnetyczne. Ponadto wyjścia układu nie są dopasowane do obciążenia impedancją linii transmisyjnej.
 
-W związku z tym zdecydowano, iż do transmisji sygnałów sterujących zostanie wykorzystany różnicowy standard przesyłania danych LVDS, opisany w `dodatku 9.1`. Mimo iż sam układ FGPA Spartan3 posiada wyjścia w tym standardzie, to nie można ich wykorzystać ze względu na brak kompensacji długości wszystkich ścieżek na płytce. Konwerter sygnałów został zrealizowany jako moduł na oddzielnej płytce drukowanej ze złączem umożliwiającym łatwe dołączenie do bazowego systemu z układem FPGA.
-
-`img:pcbSchemat`
+W związku z tym zdecydowano, iż do transmisji sygnałów sterujących zostanie wykorzystany różnicowy standard przesyłania danych LVDS (patrz rozdział 9.1.). Mimo iż sam układ FGPA Spartan3 posiada wyjścia w tym standardzie, to nie można ich wykorzystać ze względu na brak kompensacji długości wszystkich ścieżek na płytce. Konwerter sygnałów został zrealizowany jako moduł na oddzielnej płytce drukowanej ze złączem umożliwiającym łatwe dołączenie do bazowego systemu z układem FPGA.
 
 Do konwersji wykorzystano układy MAX9157 firmy Maxim, które (na podstawie `bibl:datasheetMAX9517`):
 
@@ -306,28 +302,28 @@ Do konwersji wykorzystano układy MAX9157 firmy Maxim, które (na podstawie `bib
 
 Możliwości te sprawiają, że układu MAX9157 są bardzo dobrymi elementami do budowy interfejsów do przesyłania danych długimi kablami.
 
-![Schemat zasilania](./img/zasilanie.png "img:zasilanie")
+![Rys. 4.3. Schemat zasilania](./img/zasilanie.png "img:zasilanie")
 
-Ze względu na duży pobór prądu przez nadajniki cały system nie może zostać zasilony przez płytkę z modułem FPGA. Zdecydowano o zastosowaniu dodatkowego zasilacza, który dostarczy odpowiedniej mocy do konwertera oraz nadajników (co zostało zobrazowane na rysunku `img:zasilanie`). Do wolnej pary (do transmisji danych wykorzystano tylko 3 z 4 par) podłączone zostanie napięcie zasilania oraz masa. Potencjały te są podłączone z obu rozdzielaczy jednocześnie i są połączone poprzez diody oraz filtry złożone z kondensatora i dławika, którego celem jest odfiltrowanie wszelkich zakłóceń oraz separacja potencjałów analogowych i cyfrowych (aVcc, aGnd, Vcc, cGnd).
+Ze względu na duży pobór prądu przez nadajniki cały system nie może zostać zasilony przez płytkę z modułem FPGA. Zdecydowano o zastosowaniu dodatkowego zasilacza, który dostarczy odpowiedniej mocy do konwertera oraz nadajników (co zostało zobrazowane na rysunku 4.3.). Do wolnej pary (do transmisji danych wykorzystano tylko 3 z 4 par) podłączone zostanie napięcie zasilania oraz masa. Potencjały te są podłączone z obu rozdzielaczy jednocześnie i są połączone poprzez diody oraz filtry złożone z kondensatora i dławika, którego celem jest odfiltrowanie wszelkich zakłóceń oraz separacja potencjałów analogowych i cyfrowych (aVcc, aGnd, Vcc, cGnd).
 
-`img:pcbLayout`
+`img:pcbLayout rys 4.4.`
 
-Zaprezentowany na rysunku `img:pcbLayout` layout płytki został stworzony w programie Altium Designer 6. Rozmieszczenie wyprowadzeń w układach MAX9157 jest bardzo przyjazne dla konstruktura i ułatwia prowadzenie ścieżek (wejścia po jednej stronie, wyjścia po drugiej, przecięcie płaszyczyny masy idealnie w połowie układu). Mimo to nie obyło się bez problemów z poprowadzeniem zasilania, co wymusiło dolutowanie zwor do płytki.
+Zaprezentowany na rysunku 4.4. layout płytki został stworzony w programie Altium Designer 6. Rozmieszczenie wyprowadzeń w układach MAX9157 jest bardzo przyjazne dla konstruktura i ułatwia prowadzenie ścieżek (wejścia po jednej stronie, wyjścia po drugiej, przecięcie płaszyczyny masy idealnie w połowie układu). Mimo to nie obyło się bez problemów z poprowadzeniem zasilania, co wymusiło dolutowanie zwor do płytki.
 
-![Płytka konwertera CMOS - LVDS - zdjęcie](./img/plytki/lvds.png "img:pcbLVDS")
+![Rys. 4.5. Płytka konwertera CMOS - LVDS - zdjęcie](./img/plytki/lvds.png "img:pcbLVDS")
 
 Uruchamianie układu konwertera przebiegło bez większych problemów. Pierwszym krokiem było sprawdzenie doprowadzeń zasilania poprzez podłączenie napięcia stałego do ścieżek rozprowadzających je po układzie. Napięcie na wyjściu stabilizatora wyniosło 3.3V. Następnie podłączono konwerter do modułu z FPGA oraz rozdzielacze do wyjścia. Na oscyloskopie zaobserwowano przebiegi sygnałów różnicowych, jednakże ze względu na rozwarcie na końcu linii były one zniekształcone. Dopiero podłączenie dopasowanych generatorów umożliwiło obserwację poprawnych sygnałów.
 
-Aby umożliwić rozdzielenie sygnału przesyłanego w poszczególnych żyłach kabla UTP zaprojektowano kolejną płytkę rozdzielacza. Jej jedyną funkcją jest umożliwienie podłączenia trzech generatorów do sygnałów transmitowanych jednym kablem. Została przedstawiona na rysunku `ponizej`.
+Aby umożliwić rozdzielenie sygnału przesyłanego w poszczególnych żyłach kabla UTP zaprojektowano kolejną płytkę rozdzielacza. Jej jedyną funkcją jest umożliwienie podłączenia trzech generatorów do sygnałów transmitowanych jednym kablem. Została przedstawiona na rysunku 4.6.
 
-![Płytka konwertera rozdzielacza - zdjęcie](./img/plytki/splitter.png "img:pcbLVDS")
+![Rys. 4.6. Płytka konwertera rozdzielacza - zdjęcie](./img/plytki/splitter.png "img:pcbLVDS")
 
 ## 4.5. Struktura generowanych sygnałów ##
 
 ### 4.5.1. Struktura pakietu ###
-System lokalizacyjny, do realizacji swoich funkcji, wykorzystuje sekwencje sygnałów przesyłanych w łączu radiowym. Nadajniki przesyłają zestandaryzowane sekwencje bitów, których każde pole składowe reprezentuje wykonanie odpowiednich procedur w odbiorniku. Po detekcji przesyłanej sekwencji odbiornik realizuje funkcję określoną przez ciąg bitów. Struktura logiczna przesyłanych danych została zaprezentowana na rysunku `img:SchPak1`.
+System lokalizacyjny, do realizacji swoich funkcji, wykorzystuje sekwencje sygnałów przesyłanych w łączu radiowym. Nadajniki przesyłają zestandaryzowane sekwencje bitów, których każde pole składowe reprezentuje wykonanie odpowiednich procedur w odbiorniku. Po detekcji przesyłanej sekwencji odbiornik realizuje funkcję określoną przez ciąg bitów. Struktura logiczna przesyłanych danych została zaprezentowana na rysunku 4.7.
 
-![Struktura pakietu](./img/pakiet.png "img:SchPak1")
+![Rys 4.7. Struktura logiczna pakietu](./img/pakiet.png "img:SchPak1")
 
 W schemacie pakietu informacyjnego możemy wyróżnić kilka pól, które uruchamiają odpowiednie funkcje odbiornika. Są to:
 * PRMB
@@ -339,35 +335,42 @@ W schemacie pakietu informacyjnego możemy wyróżnić kilka pól, które urucha
 
 Każdy z nich odpowiada za inicjalizację odpowiedniego procesu w odbiorniku, które po zakończeniu umożliwiają określenie różnicy czasów propagacji sygnałów i finalnie obliczenie pozycji. 
 
-1. **PRMB** - preambuła. Składa się z ok. 20 impulsów. Nie niesie treści informacyjnej, jednakże jest bardzo istotna z energetycznego punktu widzenia. Umożliwia bowiem układom odbiornika określenie poziomu sygnału, z jakimś będą transmitowane kolejne bity. Wejściowy układ *ARW* (ARW - Automatyczna Regulacja Wzmocnienia) dostosowuje parametry wzmacniacza wejściowego do poziomu mocy odebranej preambuły. Po ustaleniu tych parametrów odbiornik jest gotowy do odebrania i detekcji kolejnych bitów, które już niosą konkretną treść informacyjną.
+1. **PRMB** - preambuła. Składa się z ok. 20 impulsów. Nie niesie treści informacyjnej, jednakże jest bardzo istotna z energetycznego punktu widzenia (patrz rozdział 2.3.2 oraz 4.1),
 1. **STPS** - odblokowanie zatrzymania pomiaru czasu.
 1. **BSTP** - zatrzymanie pomiaru czasu.
 1. **IDN** - identyfikator nadajnika. Długość tego pola (32 bity) wynika ze sposobu realizacji pomiaru przez układy odbiornika. Wykorzystany do pomiaru układ TDC (*Time to Digital Converter*) typu GP2 produkcji firmy Acam wymaga odpowiedniego czasu, aby wystawić na swoje wyjścia wynik pomiaru oraz przygotować się do realiazacji kolejnego pomiaru.
 1. **STRS** - odblokowanie uruchomienia pomiaru czasu.
 1. **BSTR** - uruchomienie pomiaru czasu.
 
-Krótkiego wyjaśnienia wymaga kolejność transmitowanych pakietów - najpierw pomiar jest zatrzymywany, a później dopiero uruchamiany. Jest to konsekwencja zastosowanego systemu TDOA, gdzie mierzone są różnice czasów dotarcia sygnałów od poszczególnych nadajników. 
-
-`szczegółowy opis - rozdział o TDOA`
+W stosunku do rozwiązania bazowego pojawiają się nowe instrukcje (odblokowanie zatrzymania i uruchomienia pomiaru czasu) oraz zmieniają się parametry czasowe i ilościowe danych sekwencji. Nie podlega zmianie ich kolejność, która wynika wprost z zastosowanego sposobu wyznaczania lokalizacji (patrz 2.3).
 
 ### 4.5.2. Parametry czasowe ###
 
-`odniesienie do 2.1.2`
-W związku z powyższym faktem na etapie projektowania sygnałów transmitowanych drogą radiową należy zwrócić szczególną uwagę na odstęp miedzybitowy. Odpowiedni jego dobór jest kompromisem pomiędzy czasem działania systemu (krótki odstęp), a uchronieniem się od składowych wielodrogowych (większy odstęp). W trakcie badań poprzedzających projektowanie systemu stwierdzono, iż dla zakładanych warunków pracy odstęp międzybitowy na poziomie *200-300 \[ns\]* jest całkowicie wystarczający i skutecznie wyeliminuje omawiany problem.
+Impulsy UWB w trakcie propagacji przez kanał radiowy narażone są na wiele niekorzystnych zjawisk. W związku z przedstawionymi w rozdziale 2.1.2. faktami na etapie projektowania sygnałów należy zwrócić szczególną uwagę na odstęp miedzybitowy. Odpowiedni jego dobór jest kompromisem pomiędzy czasem działania i dokładnością systemu (krótki odstęp), a uchronieniem się od składowych wielodrogowych (większy odstęp). W trakcie badań poprzedzających projektowanie systemu stwierdzono, iż dla zakładanych warunków pracy odstęp międzybitowy na poziomie *200-300 \[ns\]* jest całkowicie wystarczający i skutecznie wyeliminuje omawiany problem.
 
-Z określonego odstępu międzybitowego wynika wprost częstotliwość z jaką należy generować impulsy. Zawiera się ona w przedziale od 3.33  do 5 MHz. Powyższym rozważaniom nie podlega jednak sygnał preambuły, w którym okres powtarzania impulsów wynosi *20 \[ns\]*, wobec czego częstotliwość taktowania układów generowania preambuły wynosi 50 \[MHz\].
+Z określonego odstępu międzybitowego wynika wprost częstotliwość z jaką należy generować impulsy. Zawiera się ona w przedziale od 3.33 do 5 MHz. Powyższym rozważaniom nie podlega jednak sygnał preambuły, w którym okres powtarzania impulsów wynosi *20 \[ns\]*, wobec czego częstotliwość taktowania układów generowania preambuły wynosi 50 \[MHz\].
+
+Parametr | Jednostka | Założona wartość | 
+---------|-----------|-------------------|
+Szerokość preambuły | ns | > 200 |
+Szerokość impulsu | ns | 100 |
+Odstęp międzybitowy | ns | 200 |
+    Tabela 4.1. Zestawienie parametrów określających wymagania czasowe
+
 
 ### 4.5.3. Modulacja ###
 
-Do przesyłania danych w łączu radiowych często wykorzystuje się modulację *OOK* (OOK - On-Off Keying), której ideę prezentują rysunki `img:OOK1` oraz `img:OOK2`
+Do przesyłania danych w łączu radiowych często wykorzystuje się modulację *OOK* (OOK - On-Off Keying), której ideę prezentują rysunki 4.8 oraz 4.9.
 
-![Sygnał oryginalny - źródło: National Instruments (www)](./img/OOK_1.gif "img:OOK1")
+![Rys. 4.8. Sygnał oryginalny - źródło: National Instruments (www)](./img/OOK_1.gif "img:OOK1")
 
-![Sygnał zmodulowany - źródło: National Instruments (www)](./img/OOK_2.gif "img:OOK2")
+![Rys. 4.9. Sygnał zmodulowany - źródło: National Instruments (www)](./img/OOK_2.gif "img:OOK2")
 
 Logicznej jedynce odpowiada wysłanie nośnej (lub, tak jak w omawianym przypadku, impulsu UWB). Brak sygnału to logiczne zero.
 
-W omawianym systemie zastosowano zmodyfikowaną wersję tej modulacji. W łączu radiowym transmitowane są sygnału UWB, w związku z czym logicznej jedynce odpowiada generacja impulsu; natomiast logiczne zero to brak nadawania. Zastosowane generatory UWB są wyzwalane narastającym zboczem sygnału wejściowego. W związku z tym, należy im dostarczyć przebieg wejściowy, który zmieni swój stan z 0 na 1 w momencie pożądanej generacji. Ma to istotne znaczenie z punktu widzenia kształtowania sygnałów w układzie FPGA.
+W omawianym systemie zastosowano zmodyfikowaną wersję tej modulacji. W łączu radiowym transmitowane są sygnału UWB, w związku z czym logicznej jedynce odpowiada generacja impulsu; natomiast logiczne zero to brak nadawania, co zostało zaprezentowane na rysunku 4.10. Zastosowane generatory UWB są wyzwalane narastającym zboczem sygnału wejściowego. W związku z tym, należy im dostarczyć przebieg wejściowy, który zmieni swój stan z 0 na 1 w momencie pożądanej generacji. Ma to istotne znaczenie z punktu widzenia kształtowania sygnałów w układzie FPGA.
+
+![Rys. 4.10. Sygnał zmodulowany UWB](./img/ook_3.png "img:OOK2")
 
 # 5. Konfiguracja FPGA 
 ## 5.1. Wprowadzenie
