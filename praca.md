@@ -252,10 +252,12 @@ W związku z wymienionymi problemami zdecydowano się wprowadzić udoskonalenia,
 
 Jednym z możliwych rozwiązań jest wprowadzenie centralnego układu sterującego  który zapewni:
 
-* sterowanie sekwencyjnym uruchamianiem nadajników UWB,
+* sterowanie sekwencyjnym uruchamianiem nadajników UWB zgodnie z rysunkiem 4.0, 
 * możliwość ustawienia parametrów konfiguracyjnych układu w jednym miejscu,
 * łatwą rozbudowę i skalowalność,
 * zmianę dotychczasowej sekwencji bitów na bardziej wydajną.
+
+![Rys. 4.1. Ilustracja kolejności nadawania pakietów.](./img/pakiety.png "Rys. 4.0.")
 
 W omawianej koncepcji rolę centralnego sterownika pełni układ FPGA wraz z odpowiednią konfiguracją oraz układami wejścia-wyjścia, które zostaną przedstawione w kolejnych rozdziałach. 
 
@@ -321,7 +323,7 @@ Aby umożliwić rozdzielenie sygnału przesyłanego w poszczególnych żyłach k
 ## 4.5. Struktura generowanych sygnałów ##
 
 ### 4.5.1. Struktura pakietu ###
-System lokalizacyjny, do realizacji swoich funkcji, wykorzystuje sekwencje sygnałów przesyłanych w łączu radiowym. Nadajniki przesyłają zestandaryzowane sekwencje bitów, których każde pole składowe reprezentuje wykonanie odpowiednich procedur w odbiorniku. Po detekcji przesyłanej sekwencji odbiornik realizuje funkcję określoną przez ciąg bitów. Struktura logiczna przesyłanych danych została zaprezentowana na rysunku 4.7.
+System lokalizacyjny, do realizacji swoich funkcji, wykorzystuje sekwencje sygnałów przesyłanych w łączu radiowym. Nadajniki przesyłają pakiety, których każde pole składowe reprezentuje wykonanie odpowiednich procedur w odbiorniku. Po detekcji przesyłanej sekwencji odbiornik realizuje funkcję określoną przez ciąg bitów. Struktura logiczna przesyłanych danych została zaprezentowana na rysunku 4.7.
 
 ![Rys 4.7. Struktura logiczna pakietu](./img/pakiet.png "img:SchPak1")
 
@@ -374,22 +376,29 @@ W omawianym systemie zastosowano zmodyfikowaną wersję tej modulacji. W łączu
 
 # 5. Konfiguracja FPGA 
 ## 5.1. Wprowadzenie
-Opisane w rozdziale `Programowalne układy cyfrowe` struktury FPGA są bardzo wygodnym narzędziem do budowania elektronicznych systemów cyfrowych. Dzięki możliwości zaimplementowania wielu klasycznych elementów (liczniki, rejestry, automaty stanów) i szerokiej ich rozbudowy można zaprojektować nawet bardzo złożone układy. Podział na struktury hierarchiczne ułatwia zarówno budowanie układu jak i jego późniejszą analizę.
+Opisane w rozdziale 3.4 struktury FPGA są bardzo wygodnym narzędziem do budowania elektronicznych systemów cyfrowych. Dzięki możliwości zaimplementowania wielu klasycznych elementów (liczniki, rejestry, automaty stanów) i szerokiej ich rozbudowy można zaprojektować nawet bardzo złożone układy. Ponadto język VHDL wprowadzając prosty sposób opisu działania układu znacznie przyśpiesza realizowanie projektu. Dodatkowo podział na struktury hierarchiczne ułatwia stworzenie układu przejrzystego do późniejszej analizy.
 
-## 5.2. Interfejs zewnętrzny i opcje konfiguracyjne
-`opisanie sterowania układem, brak implementacji póki co`
-`jakie stany (elektryczne i logiczne) co wyzwalają`
-`poziomy napięć?`
+Do pierwszego uruchomienia układu wymagane jest podłączenie do komputera poprzez interfejs JTAG oraz specjalny programator. Korzystając z programu Xilinx ISE WebPack można zaprogramować układ FPGA ładując do niego konfigurację. Jest to metoda nietrwała, ponieważ wraz z odłączeniem zasilania FPGA traci załadowane dane. Aby móc skorzystać z systemu bez podłączenia do komputera należy zaprogramować pamięć EPROM, która jest umieszczona na płytce omówionej w rozdziale 4.3 i przestawić zworkę odpowiedzialną za wskazanie pamięci, w której zapisana jest konfiguracja. Dzięki temu od układu można odłączyć zasilanie i później uruchomić niezależnie od komputera PC.
+
+## 5.2. Interfejs zewnętrzny
+W tabelach 5.1 i 5.2 zestawiono wszystkie sygnały wejściowe i wyjściowe, które zostały doprowadzone do FPGA w omawianej konfiguracji. Układ uruchamiany jest automatycznie wraz z podłączeniem zasilania (jeśli został załadowany do pamięci EPROM) lub w momencie zaprogramowania.
 
 Sygnały wejściowe | Opis |
 -----------------|------|
-`clk_in` |  wejście sygnału zegarowego wraz z buforem zapewniającym optymalną propagację sygnału w układzie |
-`start` | uruchomienie układu |
-`rst` | reset asynchroniczny |
+clk |  wejście sygnału zegarowego wraz z buforem zapewniającym optymalną propagację sygnału w układzie |
+rst | reset asynchroniczny |
+    Tabela 5.1. Opis sygnałów wejściowych 
 
 Sygnały wyjściowe | Opis |
 ------------------|------|
-`wyjścia` | sześć wyjść wygenerowanych sygnałów 
+TRX1 | wyjście sygnału do nadajnika nr 1 |
+TRX2 | wyjście sygnału do nadajnika nr 2 |
+TRX3 | wyjście sygnału do nadajnika nr 3 |
+TRX4 | wyjście sygnału do nadajnika nr 4 |
+TRX5 | wyjście sygnału do nadajnika nr 5 |
+TRX6 | wyjście sygnału do nadajnika nr 6 |
+    Tabela 5.2. Opis sygnałów wyjściowych
+
 
 ## 5.3. Top module
 Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. W układzie zdefiniowano wszystkie wymienione wcześniej wejścia, wyjscia oraz połączenia między poszczególnymi blokami składowymi. Na rysunku `img:topModule` możemy wyróżnić
@@ -403,12 +412,10 @@ Na najwyższym stopniu hierarchii projektu znajduje się element `top module`. W
 
 Bloki generujące sygnały są sterowane przez automat zarządzający, który:
 
-* czeka na polecenie użytkownika do rozpoczęcia generacji,
+* startuje wraz z włączeniem zasilania,
 * uruchamia pierwszy generator,
-* czeka na informację zwrotną, po otrzymaniu której uruchamia kolejny generator
-* analogicznie uruchamia kolejne generatory
-* `umożliwia generację pojedynczą lub ciągłą`
-* `umożliwia sterowanie odstępem międzybitowym`
+* czeka na informację zwrotną, po otrzymaniu której uruchamia kolejny generator,
+* analogicznie uruchamia kolejne generatory.
 
 ![Automat sterujący](./img/diagram_abstract.png "img:abstractDiagram")
 
@@ -441,7 +448,7 @@ W bardziej złożonych przypadkach warto posłużyć się językiem VHDL, w któ
 	end if;
 	end process;`
 
-## 5.4. "Single TRX Generator"
+## 5.4. Generator
 Na najwyższym stopniu hierarchii umieszczonych zostało 6 układów generujących sygnały wyzwalające poszczególne nadajniki. Układy te reprezentuje makroblok o strukturze przedstawionej na rysunku `:img:struktura makrobloku`:
 
 `img:struktura makrobloku`
