@@ -241,9 +241,7 @@ Finalny etapem realizacji projektu jest zaprogramowanie układu. Dokonuje się g
 # 4. System sterowania nadajnikami
 ## 4.1. Założenia
 
-## Usprawnienia dotychczasowego systemu??
-
-Najważniejszym celem pracy inżynierskiej jest usprawnienie i rozszerzenie funkcjonalności omówionego wcześniej systemu, który mimo iż działał bardzo dobrze, nie był pozbawiony wad. Głównym problemem, który pojawiał się w trakcie eksploatacji, był brak możliwości szybkiej zmiany parametrów systemu. Każdy z nadajników posiadał zintegrowany układ CPLD, w którego pamięci zapisane zostały prametry konfiguracyjne. Rozwiązanie to jest bardzo wygodne z punktu widzenia konstruktora - tworzymy kilka takich samych układów, które różnią się tylko bitami zapisanymi w pamięci. Jednakże drobna zmiana parametrów wymaga programowania każdego z układów oddzielnie. Dodatkowo, ponieważ gniazdo JTAG zostało dodatkowo umieszczone w trudno dostępnym miejscu - nie jest to proces łatwy. Ponadto dla każdej z konfiguracji CPLD należy przeprowadzić syntezę układu, co powodowało duże nakłady czasowe. Taki proces uniemożliwiał wręcz przeprowadzanie wydajnych eksperymentów ze względu na:
+Celem pracy jest usprawnienie systemu lokalizacyjnego opisanego w rozdziale 2.3., który mimo iż działał bardzo dobrze, nie był pozbawiony wad. Głównym problemem, który pojawiał się w trakcie eksploatacji, był brak możliwości szybkiej zmiany parametrów systemu. Każdy z nadajników posiadał zintegrowany układ CPLD, w którego pamięci zapisane zostały prametry konfiguracyjne. Rozwiązanie to jest bardzo wygodne z punktu widzenia konstruktora - tworzymy kilka takich samych układów, które różnią się tylko bitami zapisanymi w pamięci. Jednakże drobna zmiana parametrów wymaga programowania każdego z układów oddzielnie. Dodatkowo, ponieważ gniazdo JTAG zostało dodatkowo umieszczone w trudno dostępnym miejscu - nie jest to proces łatwy. Ponadto dla każdej z konfiguracji CPLD należy przeprowadzić syntezę układu, co powodowało duże nakłady czasowe. Taki proces uniemożliwiał wręcz przeprowadzanie wydajnych eksperymentów ze względu na:
 
 * czas dokonywanych zmian,
 * problemy z programowaniem każdegu układu z osobna.
@@ -267,15 +265,24 @@ Modyfikacja systemu wymagała opracowania nowej architektury, która wyeliminuje
 
 Takie połącznie posiada zdecydowanie więcej zalet kosztem niewielkiej komplikacji układu. Do każdego z nadajników można wysyłać niezależnie i sekwencyjnie (bądź równolegle) sygnały, których parametry ustawia się w sterowniku. Każdy z modułów radiowych otrzymuje sygnał zegarowy bezpośrednio ze sterownika, dzięki czemu system jest niezależny od jitteru wprowadzanego przez każde z urządzeń (jitter nie kumuluje się, tak jak w poprzedniej wersji).
 
-`img:archSystemu`
+![Ogólna architektura systemu lokalizacyjnego](./img/architektura.png "img:arch")
 `dokładniejszy opis`
 
 Poglądową architekturę systemu zaprezentowano na rysunku `img:archSystemu`. Układ FPGA pełni główną funkcję sterującą. Operator systemu `może ustawiać parametry` oraz wyzwolić działanie systemu. Sterownik generuje odpowiednie sygnały `(zgodnie z ustawieniami)` wysyłając je na wyjścia, po czym następuje konwersja standardu przesyłania danych do potrzeb linii transmisyjnych oraz odbiorników. Z konwertera sygnały przesyłane są kablami w standardzie Cat 5e (skrętka - 4 pary symetryczne) do rozdzielaczy, gdzie są przekazywane do odpowiednich nadajników.
 
 ## 4.3. Moduł FPGA
-`zdjęcie płytki FPGA`
-`schemat`
-`krótki opis`
+Płytka uruchomieniowa opracowana w Pracowni Miernictwa Radiokomunikacyjnego z układem Xilinx Spartan3 doskonale nadaje się do realizacji i ewaluacji omawianego systemu. Zawiera wszystkie peryferia, które są niezbędne do niezależnego działania systemu bez konieczności trwałego połączenia z komputerem. Do najbardziej istotnych elementów należą:
+
+* układ FPGA Xilinx Spartan3 XC3S200,
+* sekcja zasilająca wyposażona w stabilizatory o odpowiedniej wydajności prądowej,
+* pamięć EPROM, do której można wpisać konfigurację FPGA i uniezależnić się od komputera,
+* stabilny generator sygnału zegarowego 100MHz,
+* zestaw rekonfigurowalnych portów wejścia/wyjścia,
+* interfejs JTAG.
+
+Omawiana płytka została przedstawiona na rysunku `img:fpgaPCB`.
+
+![Plytka uruchomieniowa z układem Xilinx Spartan 3](./img/plytki/fpga.png "img:fpgaPCB`")
 
 ## 4.4. Moduł konwertera CMOS - LVDS
 Układ FPGA Spartan3 firmy Xilinx posiada wyjścia w różnych standardach. Najbardziej uniwersalnym jest CMOS, w którym:
@@ -311,6 +318,9 @@ Zaprezentowany na rysunku `img:pcbLayout` layout płytki został stworzony w pro
 
 Uruchamianie układu konwertera przebiegło bez większych problemów. Pierwszym krokiem było sprawdzenie doprowadzeń zasilania poprzez podłączenie napięcia stałego do ścieżek rozprowadzających je po układzie. Napięcie na wyjściu stabilizatora wyniosło 3.3V. Następnie podłączono konwerter do modułu z FPGA oraz rozdzielacze do wyjścia. Na oscyloskopie zaobserwowano przebiegi sygnałów różnicowych, jednakże ze względu na rozwarcie na końcu linii były one zniekształcone. Dopiero podłączenie dopasowanych generatorów umożliwiło obserwację poprawnych sygnałów.
 
+Aby umożliwić rozdzielenie sygnału przesyłanego w poszczególnych żyłach kabla UTP zaprojektowano kolejną płytkę rozdzielacza. Jej jedyną funkcją jest umożliwienie podłączenia trzech generatorów do sygnałów transmitowanych jednym kablem. Została przedstawiona na rysunku `ponizej`.
+
+![Płytka konwertera rozdzielacza - zdjęcie](./img/plytki/splitter.png "img:pcbLVDS")
 
 ## 4.5. Struktura generowanych sygnałów ##
 
