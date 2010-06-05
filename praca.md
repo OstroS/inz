@@ -504,17 +504,18 @@ W związku z tym zastąpiono bramkę AND multiplekserem przystosowanym do przeł
 
 `rysunek!!!!`
 
-
-### Realizacja regulacji przesunięć
-
 ### Testowanie
+
 
 ## Interfejs 
 
 # 6. Badania
 
 ## Cel i zakres badań
-Celem badań jest weryfikacja realizacji projektu pod kątem zdefiniowanych wcześniej wymagań. Należy sprawdzić, czy parametry określone we wstępnych założeniach spełniają określone kryteria. Opisane w `rozdziale 5.5` symulacje potwierdzają zgodnośc z założeniami, jednakże pełną wartość projektu mogą oddać tylko rzeczywiste pomiary.
+Celem badań jest weryfikacja realizacji projektu pod kątem zdefiniowanych wcześniej wymagań. Należy je przeprowadzić dwustopniowo:
+* badania funkcjonalne, określające zgodność generowanych symboli z założeniami,
+* badania parametrów czasowych, weryfikujące zależności czasowe między symbolami oraz pełnymi pakietami.
+Opisane w `rozdziale 5.5` symulacje potwierdzają zgodnośc z założeniami, jednakże pełną wartość projektu mogą oddać tylko rzeczywiste pomiary.
 
 ## Układ pomiarowy 
 
@@ -522,29 +523,43 @@ Układ pomiarowy składa się z:
 
 * pełnego systemu sterownika opracowanego w ramach pracy,
 * płytki konwertera standardu LVDS -> LVPECL,
-* oscyloskopu próbkującego TexasInstruments TDS8200.
+* oscyloskopu próbkującego TexasInstruments TDS8900 wraz z wkładką 80E04 (odwzorowanie sygnałów o częstotliwościach do 20GHz),
+* oscyloskopu HP Infinium (częstotliwość próbkowania 2GS/s, pasmo pracy 500MHz).
 
-`rysunek`
+![Schemat układu pomiarowego](./img/pomiary/pomiary.png "img:pomiary")
 
-Płytka konwertera LVDS->LVPECL oparta została na układach MAX9375. Standard LVPECL (Low Voltage Positive Emmiter-Coupled Logic) umożliwia dystrybucję bardzo szybkich sygnałów cyfrowych w liniach 50 `omowych`.
+Wstępnej oceny poprawności działania układu można dokonać wykorzystując prostszy oscyloskop HP. Dopiero pomiar parametrów czasowych z dużą dokładnością wymaga zastosowania bardziej skomplikowanego przyrządu, jakim jest oscyloskop TD8900. Płytka konwertera LVDS->LVPECL oparta została na układach MAX9375. Standard LVPECL (Low Voltage Positive Emmiter-Coupled Logic) umożliwia dystrybucję bardzo szybkich sygnałów cyfrowych w liniach 50 `omowych`, które mogą być podłączone bezpośrednio do wejścia oscyloskopu. Użycie konwertera zwalnia projektanta z konieczności dopasowania wyjścia systemu do impedancji wejściowej urządzenia pomiarowego.
 
 ## Metodyka pomiarów
 
 Przeprowadzenie dokładnych badań parametrów czasowych wymaga synchronizacji wyzowlenia oscyloskopu z badanym sygnałem. Aby zapewnić spełnienie tego warunku dokonano niewielkiej modyfikacji układu wyprowadzając jeden z wewnętrznych sygnałów do wyjścia układu FGPA. Sygnał ten jest zsynchronizowany z początkiem cyklu generacji pakietów, w związku z czym może zostać użyty do wyzwolenia oscyloskopu.
 
-`rysunek - paczka i wyzwolenie`
+![Ilustracja sygnału przebiegu pakietów i sygnału wyzwalającego](./img/pomiary/pakiety_wyzwolenie.png "img:pakiety_wyzwolenie")
 
 Po zsynchronizowaniu oscyloskopu realizowano pomiary poprzez standardowe funkcje dostępne w cyfrowych urządzeniach pomiarowych, takie jak *marker*, *delta marker*, *burst width measure* itd.
 
+## Pomiary funkcjonalne
+
+![Przebieg czasowy kompletnego pakietu](./img/pomiary/calosc.png "img:calosc")
+
+![Przebieg czasowy preambuły](./img/pomiary/preambula.png "img:preambula")
+
 ## Pomiar parametrów czasowych sygnałów
 
-### Szerokość paczki (burst width)
+### Szerokość paczki 
+
+![Szerokość paczki impulsów](./img/pomiary/tds8900/burst_width.png "img:burstwidth")
 
 ### Szerokość preambuły 
 
-### Szerokość impulsu
+### Szerokość impulsu i odstęp międzybitowy
 
-### Odstęp międzybitowy
+![Szerokość pojedynczego impulsu](./img/pomiary/tds8900/impuls_szerokosc.png "img:impszer")
+
+### Impuls UWB
+
+![Pojedynczy impuls UWB](./img/pomiary/tds8900/uwb.png "img:uwb")
+
 
 ## Pomiar parametru jitter
 
@@ -556,6 +571,18 @@ Na początku zbadano jitter samego zegara umieszczonego na płytce z modułem FP
 
 `jaki jitter ma max9157 i max9375 (2ps RMS)`
 
+![Jitter sygnału zegarowego](./img/pomiary/tds8900/clk_jitter.png "img:clk_jitter")
+
+![Jitter dla sygnału wyjściowego nadajnika nr 1](./img/pomiary/tds8900/trx1_jitter.png "img:trx1_jitter")
+
+![Jitter dla sygnału wyjściowego nadajnika nr 6](./img/pomiary/tds8900/trx6_jitter.png "img:trx6_jitter")
+
+## Podsumowanie pomiarów
+
+Parametr | Założenia | Wartość zmierzona | Jednostka |
+---------|-----------|-------------------|-----------|
+Szerokość preambuły | > 200 | 245,1 | us |
+
 # 7. Podsumowanie
 
 # 8. Bibliografia
@@ -564,6 +591,8 @@ Na początku zbadano jitter samego zegara umieszczonego na płytce z modułem FP
 * `bibl:datasheetMAX9517`
 * `bibl:VHDL` Język VHDL - Kevin Skahill
 * `bibl:spartan` Xilinx Spartan 3 FPGA Datasheet
+* `bibl:uwb` UWB Propagation Channel Modelling - Shuang Yang and Izzat Darwazeh, Department of Electronics & Electrical Engineering, University Collage London
+* `bibl:wasowski` UWB Theory and Applications, rozdział 8, Keqen Yu, Ian Oppermann
 
 # 9. Dodatki
 ## 9.1. Standard LVDS
