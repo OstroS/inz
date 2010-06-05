@@ -307,7 +307,7 @@ Ze względu na duży pobór prądu przez nadajniki cały system nie może zosta�
 
 Zaprezentowany na rysunku `img:pcbLayout` layout płytki został stworzony w programie Altium Designer 6. Rozmieszczenie wyprowadzeń w układach MAX9157 jest bardzo przyjazne dla konstruktura i ułatwia prowadzenie ścieżek (wejścia po jednej stronie, wyjścia po drugiej, przecięcie płaszyczyny masy idealnie w połowie układu). Mimo to nie obyło się bez problemów z poprowadzeniem zasilania, co wymusiło dolutowanie zwor do płytki.
 
-`img:pcbPhoto`
+![Płytka konwertera CMOS - LVDS - zdjęcie](./img/plytki/lvds.png "img:pcbLVDS")
 
 Uruchamianie układu konwertera przebiegło bez większych problemów. Pierwszym krokiem było sprawdzenie doprowadzeń zasilania poprzez podłączenie napięcia stałego do ścieżek rozprowadzających je po układzie. Napięcie na wyjściu stabilizatora wyniosło 3.3V. Następnie podłączono konwerter do modułu z FPGA oraz rozdzielacze do wyjścia. Na oscyloskopie zaobserwowano przebiegi sygnałów różnicowych, jednakże ze względu na rozwarcie na końcu linii były one zniekształcone. Dopiero podłączenie dopasowanych generatorów umożliwiło obserwację poprawnych sygnałów.
 
@@ -635,7 +635,6 @@ Na początku zbadano jitter samego zegara umieszczonego na płytce z modułem FP
 `jitter RMS: 29 [ps]`
 
     Wnioski? Jest całkiem ok, jitter jest na znosnym poziomie, ale trx6 ma lekko wiekszy. Zwiazane jest to z oddzielnymi licznikami - do wnioskow na poprawe na przyszlosc! :)
-
 
 ## 6.7. Podsumowanie pomiarów
 
