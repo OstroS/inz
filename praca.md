@@ -5,6 +5,13 @@ ___
 
 # 1. Wstęp  
 
+Systemy lokalizacyjne są używane w coraz większej ilości dziedzin życia dotykających każdego człowieka. Jednym z takich obszarów jest wspomaganie prowadzenia pojazdów drogowych poprzez określenie położenia na płaszczyźnie. Zagadnienie to było rozwijane między innymi w trakcie projektu SAFESPOT, którego celem było stworzenie kompletnego systemu zwiększającego bezpieczeństwo na drodze i pomoc kierowcom w podejmowaniu decyzji.
+
+Kluczowym zagadnieniem w systemach lokalizacyjnych jest odpowiedni projekt łącza radiowego. Do transmisji warto wykorzystać sygnały UWB (Ultra Wide Band), które mają wiele ciekawych właściwości bardzo atrakcyjnych z punktu widzenia radiolokacji (rozdział 2). W ramach projektu SAFESPOT w Pracowni Miernictwa Radiokomunikacyjnego powstał system lokalizacyjny, wykorzystujący do transmisji technikę ultra szerokopasmową. 
+
+Celem pracy jest udoskonalenie opracowanego systemu poprzez wprowadzenie nowego sterownika zarządzającego pracą nadajników (rozdział 4). W ramach pracy należało zaimplementować w strukturach FPGA (rozdział 3) pełną konfigurację sterownika, który umożliwiłby ulepszenie projektu (rozdział 5). Zaproponowano nową architekturę fizyczną oraz rozszerzone sekwencje sterujące, dzięki czemu rozwiązano pojawiające się problemy. Do zakresu pracy należało także przeprowadzenie badań zaprojektowanego sterownika (rozdział 6), aby zweryfikować poprawność funkcjonalną i spełnienie kryteriów dla parametrów czasowych sygnałów.
+
+
 # 2. Systemy lokalizacyjne UWB
 
 ## 2.1. Sygnały UWB 
